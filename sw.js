@@ -1,4 +1,4 @@
-const CACHE = 'auralift-v1';
+const CACHE = 'auralift-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -25,15 +25,12 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) return cached;
-      return fetch(event.request).then((response) => {
-        const copy = response.clone();
-        if (response.ok) {
-          caches.open(CACHE).then((cache) => cache.put(event.request, copy));
-        }
-        return response;
-      }).catch(() => caches.match('./index.html'));
-    })
+    fetch(event.request).then((response) => {
+      const copy = response.clone();
+      if (response.ok) {
+        caches.open(CACHE).then((cache) => cache.put(event.request, copy));
+      }
+      return response;
+    }).catch(() => caches.match(event.request).then((cached) => cached || caches.match('./index.html')))
   );
 });

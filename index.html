@@ -212,6 +212,21 @@
       font-feature-settings: "tnum";
     }
 
+    .timer-live #timer-display {
+      color: #3ee0c8;
+    }
+    .timer-urgent #timer-display {
+      color: #fbbf24;
+    }
+
+    .pr-chip {
+      color: #3ee0c8;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       * {
         animation: none !important;
@@ -231,7 +246,7 @@
         </div>
         <div>
           <h1 class="text-[17px] font-semibold tracking-tight text-white leading-none">AuraLift</h1>
-          <p class="text-[12px] text-mist-400 mt-1 font-medium">Recomposición · 4 días</p>
+          <p class="text-[12px] text-mist-400 mt-1 font-medium" id="header-sub">Recomposición · 4 días</p>
         </div>
       </div>
       <button onclick="switchTab('analytics')" class="pressable text-[13px] font-semibold bg-white/[0.06] text-mist-50 px-3.5 py-2 rounded-full hairline flex items-center gap-1.5">
@@ -267,6 +282,11 @@
           </span>
           <span id="session-subtitle">Lunes · Empuje</span>
         </div>
+        <p class="text-[11px] text-mist-500 mt-2" id="last-session-hint"></p>
+        <button onclick="copyLastSession()" class="pressable mt-3 w-full h-11 rounded-xl bg-white/[0.04] hairline text-[13px] font-semibold text-mist-200 flex items-center justify-center gap-1.5">
+          <i data-lucide="copy" class="w-4 h-4"></i>
+          Copiar última sesión
+        </button>
       </div>
 
       <div id="exercises-container" class="space-y-3"></div>
@@ -288,6 +308,21 @@
         <button onclick="switchTab('workout')" class="pressable text-[13px] font-semibold text-aura-400 flex items-center gap-1 px-3 py-2 rounded-full bg-aura-400/10">
           <i data-lucide="chevron-left" class="w-4 h-4"></i> Entrenar
         </button>
+      </div>
+
+      <div class="grid grid-cols-3 gap-2">
+        <div class="card rounded-2xl p-3 text-center">
+          <p class="text-[11px] text-mist-400">Sesiones</p>
+          <p class="text-[18px] font-semibold text-white mono mt-0.5" id="stat-sessions">0</p>
+        </div>
+        <div class="card rounded-2xl p-3 text-center">
+          <p class="text-[11px] text-mist-400">Mejor</p>
+          <p class="text-[18px] font-semibold text-white mono mt-0.5" id="stat-best">0</p>
+        </div>
+        <div class="card rounded-2xl p-3 text-center">
+          <p class="text-[11px] text-mist-400">7 días</p>
+          <p class="text-[18px] font-semibold text-white mono mt-0.5" id="stat-week">0</p>
+        </div>
       </div>
 
       <div class="card rounded-2xl p-4">
@@ -319,9 +354,9 @@
       </div>
 
       <div class="flex items-center gap-1">
-        <button onclick="setTimer(60)" class="pressable h-10 px-2.5 bg-white/[0.06] text-[13px] font-semibold rounded-xl hairline">60s</button>
-        <button onclick="setTimer(90)" class="pressable h-10 px-2.5 bg-white/[0.06] text-[13px] font-semibold rounded-xl hairline">90s</button>
-        <button onclick="setTimer(120)" class="pressable h-10 px-2.5 bg-white/[0.06] text-[13px] font-semibold rounded-xl hairline">2m</button>
+        <button onclick="setTimer(60)" id="preset-60" class="pressable h-10 px-2.5 bg-white/[0.06] text-[13px] font-semibold rounded-xl hairline">60s</button>
+        <button onclick="setTimer(90)" id="preset-90" class="pressable h-10 px-2.5 bg-white/[0.06] text-[13px] font-semibold rounded-xl hairline">90s</button>
+        <button onclick="setTimer(120)" id="preset-120" class="pressable h-10 px-2.5 bg-white/[0.06] text-[13px] font-semibold rounded-xl hairline">2m</button>
         <button onclick="toggleTimer()" id="timer-toggle-btn" class="pressable w-11 h-11 rounded-2xl bg-aura-400 text-ink-950 flex items-center justify-center ml-1 shadow-[0_6px_16px_rgba(32,196,176,0.28)]">
           <i data-lucide="play" class="w-4 h-4 fill-current"></i>
         </button>
@@ -334,8 +369,11 @@
     <div class="absolute left-4 right-4 bottom-[max(24px,calc(var(--safe-bottom)+16px))] max-w-xl mx-auto card rounded-[24px] p-5">
       <div class="w-10 h-1 rounded-full bg-white/15 mx-auto mb-4"></div>
       <h3 id="modal-title" class="text-[18px] font-semibold text-white text-center">Listo</h3>
-      <p id="modal-body" class="text-[15px] text-mist-400 text-center mt-2 leading-relaxed"></p>
-      <button onclick="closeModal()" class="pressable mt-5 w-full bg-aura-400 text-ink-950 font-semibold py-3.5 rounded-2xl text-[16px]">Entendido</button>
+      <p id="modal-body" class="text-[15px] text-mist-400 text-center mt-2 leading-relaxed whitespace-pre-line"></p>
+      <div class="mt-5 space-y-2">
+        <button id="modal-confirm" onclick="confirmModal()" class="pressable w-full bg-aura-400 text-ink-950 font-semibold py-3.5 rounded-2xl text-[16px]">Entendido</button>
+        <button id="modal-cancel" onclick="closeModal()" class="pressable hidden w-full py-3 text-[15px] font-semibold text-mist-400">Cancelar</button>
+      </div>
     </div>
   </div>
 
@@ -393,10 +431,13 @@
       }
     };
 
-    let currentDay = "torsoA";
+    let currentDay = localStorage.getItem('aura_current_day') || "torsoA";
+    if (!DEFAULT_ROUTINE[currentDay]) currentDay = "torsoA";
     let activeData = JSON.parse(localStorage.getItem('aura_active_session')) || {};
     let historyData = JSON.parse(localStorage.getItem('aura_history')) || [];
     let volumeChart = null;
+    let modalConfirmFn = null;
+    let wakeLock = null;
 
     let timerSeconds = 90;
     let timerPreset = 90;
@@ -406,13 +447,30 @@
     let audioCtx = null;
     let keepAliveOsc = null;
 
-    function showModal(title, body) {
+    function showModal(title, body, options = {}) {
       document.getElementById('modal-title').innerText = title;
       document.getElementById('modal-body').innerText = body;
+      const confirmBtn = document.getElementById('modal-confirm');
+      const cancelBtn = document.getElementById('modal-cancel');
+      confirmBtn.innerText = options.confirmText || 'Entendido';
+      modalConfirmFn = options.onConfirm || null;
+      if (options.cancelText) {
+        cancelBtn.classList.remove('hidden');
+        cancelBtn.innerText = options.cancelText;
+      } else {
+        cancelBtn.classList.add('hidden');
+      }
       document.getElementById('app-modal').classList.remove('hidden');
     }
 
+    function confirmModal() {
+      const fn = modalConfirmFn;
+      closeModal();
+      if (fn) fn();
+    }
+
     function closeModal() {
+      modalConfirmFn = null;
       document.getElementById('app-modal').classList.add('hidden');
     }
 
@@ -488,6 +546,32 @@
 
     function updateTimerUI() {
       document.getElementById('timer-display').innerText = formatTime(timerSeconds);
+      const widget = document.getElementById('timer-widget');
+      widget.classList.toggle('timer-live', timerRunning);
+      widget.classList.toggle('timer-urgent', timerRunning && timerSeconds <= 10);
+      [60, 90, 120].forEach((sec) => {
+        const btn = document.getElementById(`preset-${sec}`);
+        if (!btn) return;
+        const on = timerPreset === sec;
+        btn.className = `pressable h-10 px-2.5 text-[13px] font-semibold rounded-xl hairline ${
+          on ? 'bg-aura-400 text-ink-950' : 'bg-white/[0.06]'
+        }`;
+      });
+    }
+
+    async function requestWakeLock() {
+      try {
+        if ('wakeLock' in navigator) {
+          wakeLock = await navigator.wakeLock.request('screen');
+        }
+      } catch (e) {}
+    }
+
+    function releaseWakeLock() {
+      if (wakeLock) {
+        wakeLock.release().catch(() => {});
+        wakeLock = null;
+      }
     }
 
     function tickTimer() {
@@ -506,6 +590,7 @@
       updateTimerUI();
       playBeep();
       stopKeepAlive();
+      releaseWakeLock();
       if (navigator.vibrate) navigator.vibrate([200, 80, 200, 80, 200]);
       setTimerButton(false);
       const widget = document.getElementById('timer-widget');
@@ -520,6 +605,7 @@
     function startTimer() {
       unlockAudio();
       startKeepAlive();
+      requestWakeLock();
       if (timerSeconds <= 0) timerSeconds = timerPreset;
       timerEndsAt = Date.now() + timerSeconds * 1000;
       timerRunning = true;
@@ -535,7 +621,9 @@
       timerInterval = null;
       timerRunning = false;
       stopKeepAlive();
+      releaseWakeLock();
       setTimerButton(false);
+      updateTimerUI();
     }
 
     function toggleTimer() {
@@ -552,7 +640,10 @@
     }
 
     document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible' && timerRunning) tickTimer();
+      if (document.visibilityState === 'visible' && timerRunning) {
+        tickTimer();
+        requestWakeLock();
+      }
     });
 
     function renderTabs() {
@@ -575,6 +666,7 @@
         `;
         btn.onclick = () => {
           currentDay = k;
+          localStorage.setItem('aura_current_day', currentDay);
           renderTabs();
           renderExercises();
         };
@@ -586,6 +678,18 @@
       const subEl = document.getElementById('session-subtitle');
       if (titleEl) titleEl.innerText = day.name;
       if (subEl) subEl.innerText = day.subtitle;
+      const last = getLastDaySession(currentDay);
+      const hint = document.getElementById('last-session-hint');
+      if (hint) {
+        hint.innerText = last ? `Última vez: ${last.date} · ${last.tonnage.toLocaleString()} kg` : 'Primera vez en este día';
+      }
+    }
+
+    function getLastDaySession(dayKey) {
+      for (let i = historyData.length - 1; i >= 0; i--) {
+        if (historyData[i].dayKey === dayKey) return historyData[i];
+      }
+      return null;
     }
 
     function getLastSessionRecord(exerciseName) {
@@ -599,6 +703,7 @@
     }
 
     function renderExercises() {
+      const y = window.scrollY;
       const container = document.getElementById('exercises-container');
       container.innerHTML = '';
       const dayData = DEFAULT_ROUTINE[currentDay];
@@ -615,9 +720,12 @@
               <h3 class="text-[15px] font-semibold text-white leading-snug">${ex.name}</h3>
               <p class="text-[12px] text-aura-400 font-medium mt-0.5">${ex.target}</p>
             </div>
-            <button onclick="addExtraSet('${currentDay}', ${exIdx})" class="pressable shrink-0 text-[12px] font-semibold text-mist-200 bg-white/[0.05] hairline px-2.5 h-8 rounded-full flex items-center gap-1">
-              <i data-lucide="plus" class="w-3.5 h-3.5"></i> Serie
-            </button>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button onclick="fillFromLast('${currentDay}', ${exIdx})" class="pressable text-[12px] font-semibold text-mist-200 bg-white/[0.05] hairline px-2.5 h-8 rounded-full">Copiar</button>
+              <button onclick="addExtraSet('${currentDay}', ${exIdx})" class="pressable text-[12px] font-semibold text-mist-200 bg-white/[0.05] hairline px-2.5 h-8 rounded-full flex items-center gap-1">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
           </div>
 
           <div class="grid grid-cols-12 gap-2 text-[10px] uppercase tracking-[0.08em] font-semibold text-mist-500 px-1 mb-1.5">
@@ -635,24 +743,28 @@
         for (let s = 1; s <= totalSets; s++) {
           const setKey = `${setKeyPrefix}s${s}`;
           const current = activeData[setKey] || { weight: '', reps: '', done: false };
-          const prev = (lastRecords && lastRecords[s - 1]) ? `${lastRecords[s - 1].weight} × ${lastRecords[s - 1].reps}` : '—';
+          const lastSet = lastRecords && lastRecords[s - 1];
+          const prev = lastSet ? `${lastSet.weight} × ${lastSet.reps}` : '—';
+          const curW = parseFloat(current.weight);
+          const lastW = lastSet ? parseFloat(lastSet.weight) : NaN;
+          const isPr = current.done && !isNaN(curW) && !isNaN(lastW) && curW > lastW;
 
           html += `
             <div class="grid grid-cols-12 gap-2 items-center set-row px-1 rounded-xl ${current.done ? 'bg-aura-400/[0.08]' : ''}">
-              <span class="col-span-2 text-center text-[13px] font-semibold text-mist-400 mono">${s}</span>
+              <span class="col-span-2 text-center text-[13px] font-semibold ${isPr ? 'text-aura-400' : 'text-mist-400'} mono">${s}${isPr ? '<span class="pr-chip block">PR</span>' : ''}</span>
               <span class="col-span-3 text-center text-[12px] text-mist-500 font-medium mono">${prev}</span>
               <div class="col-span-3">
-                <input type="number" step="0.5" inputmode="decimal" placeholder="0" value="${current.weight}"
+                <input type="number" step="0.5" inputmode="decimal" placeholder="0" value="${current.weight}" autocomplete="off"
                   oninput="updateValue('${setKey}', 'weight', this.value)"
                   class="w-full bg-ink-900 border border-white/10 text-center py-2 rounded-[10px] font-semibold text-white placeholder:text-mist-500/50">
               </div>
               <div class="col-span-2">
-                <input type="number" inputmode="numeric" placeholder="0" value="${current.reps}"
+                <input type="number" inputmode="numeric" placeholder="0" value="${current.reps}" autocomplete="off"
                   oninput="updateValue('${setKey}', 'reps', this.value)"
                   class="w-full bg-ink-900 border border-white/10 text-center py-2 rounded-[10px] font-semibold text-white placeholder:text-mist-500/50">
               </div>
               <div class="col-span-2 flex justify-center">
-                <button onclick="toggleSet('${setKey}', this)"
+                <button onclick="toggleSet('${setKey}')"
                   class="check-btn rounded-xl flex items-center justify-center pressable ${
                     current.done
                       ? 'bg-aura-400 text-ink-950 shadow-[0_4px_12px_rgba(32,196,176,0.28)]'
@@ -671,6 +783,57 @@
 
       lucide.createIcons();
       updateHeaderStats();
+      requestAnimationFrame(() => window.scrollTo(0, y));
+    }
+
+    function fillFromLast(dayKey, exIdx) {
+      const ex = DEFAULT_ROUTINE[dayKey].exercises[exIdx];
+      const last = getLastSessionRecord(ex.name);
+      if (!last) {
+        showModal('Sin marca anterior', 'Todavía no hay una sesión guardada de este ejercicio.');
+        return;
+      }
+      const prefix = `${dayKey}_ex${exIdx}_`;
+      const totalSets = activeData[prefix + 'count'] || ex.sets;
+      let filled = 0;
+      for (let s = 1; s <= totalSets; s++) {
+        const prev = last[s - 1];
+        if (!prev) continue;
+        const key = `${prefix}s${s}`;
+        const cur = activeData[key] || { weight: '', reps: '', done: false };
+        activeData[key] = { ...cur, weight: prev.weight, reps: prev.reps };
+        filled++;
+      }
+      saveActiveData();
+      renderExercises();
+      if (!filled) showModal('Sin datos', 'La sesión anterior no tiene series para copiar.');
+    }
+
+    function copyLastSession() {
+      const last = getLastDaySession(currentDay);
+      if (!last || !last.exercises) {
+        showModal('Sin sesión anterior', 'Todavía no has guardado este día. Cuando lo completes, podrás copiarlo.');
+        return;
+      }
+      const dayData = DEFAULT_ROUTINE[currentDay];
+      dayData.exercises.forEach((ex, exIdx) => {
+        const lastSets = last.exercises[ex.name];
+        if (!lastSets) return;
+        const prefix = `${currentDay}_ex${exIdx}_`;
+        const totalSets = Math.max(activeData[prefix + 'count'] || ex.sets, lastSets.length);
+        if (lastSets.length > (activeData[prefix + 'count'] || ex.sets)) {
+          activeData[prefix + 'count'] = lastSets.length;
+        }
+        for (let s = 1; s <= totalSets; s++) {
+          const prev = lastSets[s - 1];
+          if (!prev) continue;
+          const key = `${prefix}s${s}`;
+          const cur = activeData[key] || { weight: '', reps: '', done: false };
+          activeData[key] = { ...cur, weight: prev.weight, reps: prev.reps, done: false };
+        }
+      });
+      saveActiveData();
+      renderExercises();
     }
 
     function addExtraSet(dayKey, exIdx) {
@@ -688,7 +851,7 @@
       updateHeaderStats();
     }
 
-    function toggleSet(key, btn) {
+    function toggleSet(key) {
       if (!activeData[key]) activeData[key] = { weight: '', reps: '', done: false };
       activeData[key].done = !activeData[key].done;
       saveActiveData();
@@ -733,16 +896,18 @@
       localStorage.setItem('aura_active_session', JSON.stringify(activeData));
     }
 
-    function finishWorkout() {
+    function collectSession() {
       let completedSets = 0;
+      let totalCount = 0;
       let sessionTonnage = 0;
       const sessionExercises = {};
-
       const dayData = DEFAULT_ROUTINE[currentDay];
+
       dayData.exercises.forEach((ex, exIdx) => {
         const setsArray = [];
         const setKeyPrefix = `${currentDay}_ex${exIdx}_`;
         const totalSets = (activeData[setKeyPrefix + 'count'] || ex.sets);
+        totalCount += totalSets;
 
         for (let s = 1; s <= totalSets; s++) {
           const setKey = `${setKeyPrefix}s${s}`;
@@ -760,11 +925,32 @@
         }
       });
 
-      if (completedSets === 0) {
+      return { completedSets, totalCount, sessionTonnage, sessionExercises, dayData };
+    }
+
+    function finishWorkout() {
+      const session = collectSession();
+      if (session.completedSets === 0) {
         showModal("Falta una serie", "Marca al menos una serie completada antes de finalizar.");
         return;
       }
+      if (session.completedSets < session.totalCount) {
+        showModal(
+          "Sesión incompleta",
+          `Has marcado ${session.completedSets} de ${session.totalCount} series. ¿Guardar igual?`,
+          {
+            confirmText: 'Guardar',
+            cancelText: 'Seguir entrenando',
+            onConfirm: () => saveFinishedSession(session)
+          }
+        );
+        return;
+      }
+      saveFinishedSession(session);
+    }
 
+    function saveFinishedSession(session) {
+      const { completedSets, sessionTonnage, sessionExercises, dayData } = session;
       const logEntry = {
         id: Date.now(),
         date: new Date().toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }),
@@ -792,10 +978,11 @@
         }
       });
       saveActiveData();
+      renderTabs();
       renderExercises();
 
       setTimeout(() => {
-        showModal("Entrenamiento guardado", `Gran sesión. Tonelaje levantado: ${sessionTonnage.toLocaleString()} kg.`);
+        showModal("Entrenamiento guardado", `Gran sesión.\n${completedSets} series · ${sessionTonnage.toLocaleString()} kg`);
       }, 280);
     }
 
@@ -804,6 +991,7 @@
         document.getElementById('tab-workout').classList.add('hidden');
         document.getElementById('timer-widget').classList.add('hidden');
         document.getElementById('tab-analytics').classList.remove('hidden');
+        renderStats();
         renderHistoryList();
         renderChart();
       } else {
@@ -812,6 +1000,42 @@
         document.getElementById('timer-widget').classList.remove('hidden');
       }
       lucide.createIcons();
+    }
+
+    function renderStats() {
+      const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+      const weekCount = historyData.filter(h => (h.id || 0) >= weekAgo).length;
+      const best = historyData.reduce((m, h) => Math.max(m, h.tonnage || 0), 0);
+      document.getElementById('stat-sessions').innerText = historyData.length;
+      document.getElementById('stat-best').innerText = best ? `${Math.round(best)}` : '0';
+      document.getElementById('stat-week').innerText = weekCount;
+      const sub = document.getElementById('header-sub');
+      if (sub) sub.innerText = historyData.length ? `${historyData.length} sesiones guardadas` : 'Recomposición · 4 días';
+    }
+
+    function deleteSession(id) {
+      showModal('Borrar sesión', 'Esta sesión desaparecerá del historial. Tus marcas del día de hoy no se tocan.', {
+        confirmText: 'Borrar',
+        cancelText: 'Cancelar',
+        onConfirm: () => {
+          historyData = historyData.filter(h => h.id !== id);
+          localStorage.setItem('aura_history', JSON.stringify(historyData));
+          renderStats();
+          renderHistoryList();
+          renderChart();
+          renderTabs();
+        }
+      });
+    }
+
+    function showSessionDetail(id) {
+      const h = historyData.find(x => x.id === id);
+      if (!h) return;
+      const lines = Object.keys(h.exercises || {}).map((name) => {
+        const sets = h.exercises[name].map(s => `${s.weight}×${s.reps}`).join('  ');
+        return `${name}\n${sets}`;
+      });
+      showModal(h.name, `${h.date} · ${h.tonnage.toLocaleString()} kg\n\n${lines.join('\n\n') || 'Sin detalle'}`);
     }
 
     function renderHistoryList() {
@@ -825,16 +1049,20 @@
 
       historyData.slice().reverse().forEach(h => {
         const row = document.createElement('div');
-        row.className = "py-3.5 flex justify-between items-center";
+        row.className = "py-3.5 flex justify-between items-center gap-3";
         row.innerHTML = `
-          <div>
+          <button onclick="showSessionDetail(${h.id})" class="text-left min-w-0 flex-1">
             <p class="font-semibold text-white text-[15px]">${h.name}</p>
             <p class="text-[12px] text-mist-400 mt-0.5">${h.date} · ${h.completedSets} series</p>
-          </div>
-          <span class="font-semibold text-aura-400 mono text-[14px]">${h.tonnage.toLocaleString()} kg</span>
+          </button>
+          <span class="font-semibold text-aura-400 mono text-[14px] shrink-0">${h.tonnage.toLocaleString()} kg</span>
+          <button onclick="deleteSession(${h.id})" class="pressable w-9 h-9 rounded-xl bg-white/[0.04] hairline flex items-center justify-center text-mist-400">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+          </button>
         `;
         container.appendChild(row);
       });
+      lucide.createIcons();
     }
 
     function renderChart() {
@@ -882,6 +1110,7 @@
     renderTabs();
     renderExercises();
     updateTimerUI();
+    renderStats();
     lucide.createIcons();
 
     if ('serviceWorker' in navigator) {
