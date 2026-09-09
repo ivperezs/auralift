@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AuraLift">
+  <meta name="theme-color" content="#07080b">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="icon-192.png">
+  <title>AuraLift</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            ink: {
+              950: '#07080b',
+              900: '#0d0f14',
+              800: '#141c27',
+              700: '#1c2734',
+              600: '#263241'
+            },
+            mist: {
+              50: '#f4f7fb',
+              200: '#c5d0dc',
+              400: '#8a9bb0',
+              500: '#6b7f96'
+            },
+            aura: {
+              300: '#7dfff0',
+              400: '#3ee0c8',
+              500: '#20c4b0',
+              600: '#14a394'
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Text', 'SF Pro Display', 'system-ui', 'Segoe UI', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+      --accent: #3ee0c8;
+      --accent-dim: rgba(62, 224, 200, 0.14);
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    html, body {
+      background: #07080b;
+      min-height: 100%;
+      min-height: 100dvh;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar,
+    *::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+      display: none;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior-y: none;
+      padding-left: var(--safe-left);
+      padding-right: var(--safe-right);
+    }
+
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button, a {
+      touch-action: manipulation;
+      cursor: pointer;
+    }
+
+    button:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
+    /* Safari: 16px mínimo para no hacer zoom al enfocar */
+    input[type=number],
+    input[type=text] {
+      font-size: 16px;
+      -webkit-appearance: none;
+      appearance: none;
+      border-radius: 10px;
+    }
+
+    .app-bg {
+      background:
+        radial-gradient(1200px 480px at 50% -12%, rgba(62, 224, 200, 0.16), transparent 55%),
+        radial-gradient(700px 320px at 100% 8%, rgba(88, 120, 255, 0.08), transparent 50%),
+        #07080b;
+    }
+
+    .glass {
+      background: rgba(10, 14, 20, 0.72);
+      backdrop-filter: saturate(180%) blur(22px);
+      -webkit-backdrop-filter: saturate(180%) blur(22px);
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(24, 32, 44, 0.92), rgba(16, 22, 32, 0.96));
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+    }
+
+    .hairline {
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .set-row {
+      min-height: 48px;
+    }
+
+    .check-btn {
+      min-width: 44px;
+      min-height: 44px;
+    }
+
+    .pressable {
+      transition: transform 0.12s ease, opacity 0.12s ease, background-color 0.15s ease;
+    }
+    .pressable:active {
+      transform: scale(0.98);
+      opacity: 0.92;
+    }
+
+    .day-seg {
+      min-height: 52px;
+    }
+
+    .timer-dock {
+      padding-bottom: max(14px, calc(var(--safe-bottom) + 10px));
+    }
+
+    .timer-done .timer-panel {
+      animation: timerDone 0.45s ease 3;
+    }
+    @keyframes timerDone {
+      0%, 100% { box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.45); }
+      50% { box-shadow: 0 0 0 3px rgba(62, 224, 200, 0.55); background: rgba(62, 224, 200, 0.16); }
+    }
+
+    .header-pad {
+      padding-top: max(12px, calc(var(--safe-top) + 8px));
+    }
+
+    .progress-track {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #20c4b0, #7dfff0);
+      border-radius: 999px;
+      transition: width 0.35s ease;
+    }
+
+    .modal-scrim {
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .mono {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum";
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="app-bg text-mist-50 min-h-screen select-none antialiased pb-36">
+
+  <header class="sticky top-0 z-30 glass border-b border-white/5 header-pad px-5 pb-3">
+    <div class="max-w-xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-aura-300 to-aura-600 flex items-center justify-center shadow-[0_8px_24px_rgba(32,196,176,0.28)]">
+          <i data-lucide="dumbbell" class="w-5 h-5 text-ink-950"></i>
+        </div>
+        <div>
+          <h1 class="text-[17px] font-semibold tracking-tight text-white leading-none">AuraLift</h1>
+          <p class="text-[12px] text-mist-400 mt-1 font-medium">Recomposición · 4 días</p>
+        </div>
+      </div>
+      <button onclick="switchTab('analytics')" class="pressable text-[13px] font-semibold bg-white/[0.06] text-mist-50 px-3.5 py-2 rounded-full hairline flex items-center gap-1.5">
+        <i data-lucide="bar-chart-3" class="w-4 h-4 text-aura-400"></i>
+        <span>Progreso</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="max-w-xl mx-auto px-4 mt-4">
+
+    <div id="tab-workout">
+      <div class="grid grid-cols-4 gap-1 bg-ink-800/80 p-1 rounded-2xl hairline mb-4" id="day-selector"></div>
+
+      <div class="card rounded-2xl px-4 py-3.5 mb-4">
+        <div class="flex items-center justify-between mb-2.5">
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.14em] text-mist-400 font-semibold">Sesión de hoy</p>
+            <p class="text-[15px] font-semibold text-white mt-0.5" id="session-title">Torso A</p>
+          </div>
+          <div class="text-right">
+            <p class="text-[11px] text-mist-400">Volumen</p>
+            <p class="text-[15px] font-semibold text-aura-400 mono" id="live-tonnage">0 kg</p>
+          </div>
+        </div>
+        <div class="progress-track mb-2">
+          <div class="progress-fill" id="session-progress"></div>
+        </div>
+        <div class="flex items-center justify-between text-[12px] text-mist-400">
+          <span class="flex items-center gap-1.5">
+            <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-aura-400"></i>
+            Series <span class="text-white font-semibold mono ml-1" id="live-completed-sets">0/0</span>
+          </span>
+          <span id="session-subtitle">Lunes · Empuje</span>
+        </div>
+      </div>
+
+      <div id="exercises-container" class="space-y-3"></div>
+
+      <div class="mt-5 mb-2">
+        <button onclick="finishWorkout()" class="pressable w-full bg-gradient-to-r from-aura-500 to-aura-300 text-ink-950 font-semibold py-3.5 rounded-2xl shadow-[0_10px_28px_rgba(32,196,176,0.22)] flex items-center justify-center gap-2 text-[16px]">
+          <i data-lucide="flag" class="w-5 h-5"></i>
+          <span>Completar entrenamiento</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="tab-analytics" class="hidden space-y-4 pb-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-[11px] uppercase tracking-[0.14em] text-mist-400 font-semibold">Analítica</p>
+          <h2 class="text-[20px] font-semibold text-white mt-0.5">Historial y progreso</h2>
+        </div>
+        <button onclick="switchTab('workout')" class="pressable text-[13px] font-semibold text-aura-400 flex items-center gap-1 px-3 py-2 rounded-full bg-aura-400/10">
+          <i data-lucide="chevron-left" class="w-4 h-4"></i> Entrenar
+        </button>
+      </div>
+
+      <div class="card rounded-2xl p-4">
+        <h3 class="text-[12px] font-semibold text-mist-400 uppercase tracking-[0.12em] mb-3">Tonelaje por sesión</h3>
+        <div class="h-48">
+          <canvas id="volumeChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card rounded-2xl p-4">
+        <h3 class="text-[12px] font-semibold text-mist-400 uppercase tracking-[0.12em] mb-1">Últimas sesiones</h3>
+        <div id="history-list" class="divide-y divide-white/5">
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <div id="timer-widget" class="fixed bottom-0 left-0 right-0 max-w-xl mx-auto z-40 px-4 timer-dock">
+    <div class="timer-panel glass hairline rounded-[22px] px-3.5 py-3 shadow-[0_-8px_40px_rgba(0,0,0,0.45)] flex items-center justify-between">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-11 h-11 rounded-2xl bg-aura-400/12 border border-aura-400/20 flex items-center justify-center text-aura-400">
+          <i data-lucide="timer" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <p class="text-[11px] text-mist-400 font-semibold tracking-[0.12em] uppercase">Descanso</p>
+          <span id="timer-display" class="text-[22px] font-semibold text-white mono tracking-tight">01:30</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1">
+        <button onclick="setTimer(60)" class="pressable h-10 px-2.5 bg-white/[0.06] text-[13px] font-semibold rounded-xl hairline">60s</button>
+        <button onclick="setTimer(90)" class="pressable h-10 px-2.5 bg-white/[0.06] text-[13px] font-semibold rounded-xl hairline">90s</button>
+        <button onclick="setTimer(120)" class="pressable h-10 px-2.5 bg-white/[0.06] text-[13px] font-semibold rounded-xl hairline">2m</button>
+        <button onclick="toggleTimer()" id="timer-toggle-btn" class="pressable w-11 h-11 rounded-2xl bg-aura-400 text-ink-950 flex items-center justify-center ml-1 shadow-[0_6px_16px_rgba(32,196,176,0.28)]">
+          <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="app-modal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-scrim absolute inset-0" onclick="closeModal()"></div>
+    <div class="absolute left-4 right-4 bottom-[max(24px,calc(var(--safe-bottom)+16px))] max-w-xl mx-auto card rounded-[24px] p-5">
+      <div class="w-10 h-1 rounded-full bg-white/15 mx-auto mb-4"></div>
+      <h3 id="modal-title" class="text-[18px] font-semibold text-white text-center">Listo</h3>
+      <p id="modal-body" class="text-[15px] text-mist-400 text-center mt-2 leading-relaxed"></p>
+      <button onclick="closeModal()" class="pressable mt-5 w-full bg-aura-400 text-ink-950 font-semibold py-3.5 rounded-2xl text-[16px]">Entendido</button>
+    </div>
+  </div>
+
+  <script>
+    const DEFAULT_ROUTINE = {
+      torsoA: {
+        name: "Torso A",
+        subtitle: "Lunes · Empuje",
+        short: "Lun",
+        exercises: [
+          { name: "Press de banca plano", target: "3 × 6-8", sets: 3 },
+          { name: "Remo con barra / polea", target: "3 × 8-10", sets: 3 },
+          { name: "Press inclinado mancuernas", target: "3 × 10-12", sets: 3 },
+          { name: "Jalón al pecho prono", target: "3 × 10-12", sets: 3 },
+          { name: "Elevaciones laterales", target: "4 × 12-15", sets: 4 },
+          { name: "Extensiones tríceps polea", target: "3 × 10-12", sets: 3 }
+        ]
+      },
+      piernaA: {
+        name: "Pierna A",
+        subtitle: "Martes · Cuádriceps",
+        short: "Mar",
+        exercises: [
+          { name: "Sentadilla trasera", target: "3 × 6-8", sets: 3 },
+          { name: "Peso muerto rumano", target: "3 × 8-10", sets: 3 },
+          { name: "Extensiones de cuádriceps", target: "3 × 12-15", sets: 3 },
+          { name: "Curl femoral tumbado", target: "3 × 10-12", sets: 3 },
+          { name: "Gemelos de pie", target: "4 × 12-15", sets: 4 }
+        ]
+      },
+      torsoB: {
+        name: "Torso B",
+        subtitle: "Jueves · Tracción",
+        short: "Jue",
+        exercises: [
+          { name: "Press militar barra/manc", target: "3 × 6-8", sets: 3 },
+          { name: "Dominadas / Jalón neutro", target: "3 × 8-10", sets: 3 },
+          { name: "Cruces en poleas / Contractor", target: "3 × 12-15", sets: 3 },
+          { name: "Remo unilateral manc/máq", target: "3 × 10-12", sets: 3 },
+          { name: "Face Pull / Pájaros", target: "3 × 12-15", sets: 3 },
+          { name: "Curl de bíceps barra Z", target: "3 × 10-12", sets: 3 }
+        ]
+      },
+      piernaB: {
+        name: "Pierna B",
+        subtitle: "Viernes · Cadena post.",
+        short: "Vie",
+        exercises: [
+          { name: "Peso muerto convencional", target: "3 × 5-7", sets: 3 },
+          { name: "Sentadilla búlgara", target: "3 × 8-10/p", sets: 3 },
+          { name: "Curl femoral sentado", target: "3 × 10-12", sets: 3 },
+          { name: "Prensa inclinada", target: "3 × 10-12", sets: 3 },
+          { name: "Gemelos sentado", target: "4 × 12-15", sets: 4 }
+        ]
+      }
+    };
+
+    let currentDay = "torsoA";
+    let activeData = JSON.parse(localStorage.getItem('aura_active_session')) || {};
+    let historyData = JSON.parse(localStorage.getItem('aura_history')) || [];
+    let volumeChart = null;
+
+    let timerSeconds = 90;
+    let timerPreset = 90;
+    let timerInterval = null;
+    let timerRunning = false;
+    let timerEndsAt = 0;
+    let audioCtx = null;
+    let keepAliveOsc = null;
+
+    function showModal(title, body) {
+      document.getElementById('modal-title').innerText = title;
+      document.getElementById('modal-body').innerText = body;
+      document.getElementById('app-modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('app-modal').classList.add('hidden');
+    }
+
+    function getAudioCtx() {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      if (!audioCtx) audioCtx = new AC();
+      return audioCtx;
+    }
+
+    function unlockAudio() {
+      const ctx = getAudioCtx();
+      if (!ctx) return;
+      if (ctx.state === 'suspended') {
+        ctx.resume().catch(() => {});
+      }
+    }
+
+    function startKeepAlive() {
+      unlockAudio();
+      const ctx = getAudioCtx();
+      if (!ctx) return;
+      stopKeepAlive();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.frequency.value = 20;
+      gain.gain.value = 0.0001;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      keepAliveOsc = osc;
+    }
+
+    function stopKeepAlive() {
+      if (!keepAliveOsc) return;
+      try { keepAliveOsc.stop(); } catch (e) {}
+      keepAliveOsc = null;
+    }
+
+    function playBeep() {
+      const ctx = getAudioCtx();
+      if (!ctx) return;
+      if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+      const now = ctx.currentTime;
+      [0, 0.2, 0.4].forEach((offset) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, now + offset);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        gain.gain.setValueAtTime(0.0001, now + offset);
+        gain.gain.exponentialRampToValueAtTime(0.22, now + offset + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + offset + 0.16);
+        osc.start(now + offset);
+        osc.stop(now + offset + 0.18);
+      });
+    }
+
+    function setTimerButton(running) {
+      const btn = document.getElementById('timer-toggle-btn');
+      btn.innerHTML = running
+        ? `<i data-lucide="pause" class="w-4 h-4 fill-current"></i>`
+        : `<i data-lucide="play" class="w-4 h-4 fill-current"></i>`;
+      lucide.createIcons();
+    }
+
+    function formatTime(s) {
+      const min = Math.floor(s / 60);
+      const sec = s % 60;
+      return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+    }
+
+    function updateTimerUI() {
+      document.getElementById('timer-display').innerText = formatTime(timerSeconds);
+    }
+
+    function tickTimer() {
+      if (!timerRunning) return;
+      const remaining = Math.max(0, Math.ceil((timerEndsAt - Date.now()) / 1000));
+      timerSeconds = remaining;
+      updateTimerUI();
+      if (remaining <= 0) finishTimer();
+    }
+
+    function finishTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timerRunning = false;
+      timerSeconds = 0;
+      updateTimerUI();
+      playBeep();
+      stopKeepAlive();
+      if (navigator.vibrate) navigator.vibrate([200, 80, 200, 80, 200]);
+      setTimerButton(false);
+      const widget = document.getElementById('timer-widget');
+      widget.classList.add('timer-done');
+      setTimeout(() => widget.classList.remove('timer-done'), 1500);
+      setTimeout(() => {
+        timerSeconds = timerPreset;
+        updateTimerUI();
+      }, 900);
+    }
+
+    function startTimer() {
+      unlockAudio();
+      startKeepAlive();
+      if (timerSeconds <= 0) timerSeconds = timerPreset;
+      timerEndsAt = Date.now() + timerSeconds * 1000;
+      timerRunning = true;
+      setTimerButton(true);
+      clearInterval(timerInterval);
+      timerInterval = setInterval(tickTimer, 200);
+      tickTimer();
+    }
+
+    function pauseTimer() {
+      tickTimer();
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timerRunning = false;
+      stopKeepAlive();
+      setTimerButton(false);
+    }
+
+    function toggleTimer() {
+      unlockAudio();
+      if (timerRunning) pauseTimer();
+      else startTimer();
+    }
+
+    function setTimer(sec) {
+      timerPreset = sec;
+      timerSeconds = sec;
+      updateTimerUI();
+      startTimer();
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && timerRunning) tickTimer();
+    });
+
+    function renderTabs() {
+      const nav = document.getElementById('day-selector');
+      nav.innerHTML = '';
+
+      const keys = Object.keys(DEFAULT_ROUTINE);
+      keys.forEach(k => {
+        const item = DEFAULT_ROUTINE[k];
+        const isActive = currentDay === k;
+        const btn = document.createElement('button');
+        btn.className = `day-seg rounded-[14px] text-center transition flex flex-col items-center justify-center pressable ${
+          isActive
+            ? 'bg-aura-400 text-ink-950 font-semibold shadow-[0_6px_16px_rgba(32,196,176,0.22)]'
+            : 'text-mist-400'
+        }`;
+        btn.innerHTML = `
+          <span class="text-[13px] leading-none">${item.name}</span>
+          <span class="text-[10px] mt-1 ${isActive ? 'opacity-70' : 'opacity-80'}">${item.short}</span>
+        `;
+        btn.onclick = () => {
+          currentDay = k;
+          renderTabs();
+          renderExercises();
+        };
+        nav.appendChild(btn);
+      });
+
+      const day = DEFAULT_ROUTINE[currentDay];
+      const titleEl = document.getElementById('session-title');
+      const subEl = document.getElementById('session-subtitle');
+      if (titleEl) titleEl.innerText = day.name;
+      if (subEl) subEl.innerText = day.subtitle;
+    }
+
+    function getLastSessionRecord(exerciseName) {
+      for (let i = historyData.length - 1; i >= 0; i--) {
+        const session = historyData[i];
+        if (session.exercises && session.exercises[exerciseName]) {
+          return session.exercises[exerciseName];
+        }
+      }
+      return null;
+    }
+
+    function renderExercises() {
+      const container = document.getElementById('exercises-container');
+      container.innerHTML = '';
+      const dayData = DEFAULT_ROUTINE[currentDay];
+
+      dayData.exercises.forEach((ex, exIdx) => {
+        const exCard = document.createElement('div');
+        exCard.className = "card rounded-2xl p-4";
+
+        const lastRecords = getLastSessionRecord(ex.name);
+
+        let html = `
+          <div class="flex items-start justify-between mb-3 gap-3">
+            <div class="min-w-0">
+              <h3 class="text-[15px] font-semibold text-white leading-snug">${ex.name}</h3>
+              <p class="text-[12px] text-aura-400 font-medium mt-0.5">${ex.target}</p>
+            </div>
+            <button onclick="addExtraSet('${currentDay}', ${exIdx})" class="pressable shrink-0 text-[12px] font-semibold text-mist-200 bg-white/[0.05] hairline px-2.5 h-8 rounded-full flex items-center gap-1">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i> Serie
+            </button>
+          </div>
+
+          <div class="grid grid-cols-12 gap-2 text-[10px] uppercase tracking-[0.08em] font-semibold text-mist-500 px-1 mb-1.5">
+            <span class="col-span-2 text-center">Set</span>
+            <span class="col-span-3 text-center">Anterior</span>
+            <span class="col-span-3 text-center">Kg</span>
+            <span class="col-span-2 text-center">Reps</span>
+            <span class="col-span-2 text-center">Ok</span>
+          </div>
+        `;
+
+        const setKeyPrefix = `${currentDay}_ex${exIdx}_`;
+        const totalSets = (activeData[setKeyPrefix + 'count'] || ex.sets);
+
+        for (let s = 1; s <= totalSets; s++) {
+          const setKey = `${setKeyPrefix}s${s}`;
+          const current = activeData[setKey] || { weight: '', reps: '', done: false };
+          const prev = (lastRecords && lastRecords[s - 1]) ? `${lastRecords[s - 1].weight} × ${lastRecords[s - 1].reps}` : '—';
+
+          html += `
+            <div class="grid grid-cols-12 gap-2 items-center set-row px-1 rounded-xl ${current.done ? 'bg-aura-400/[0.08]' : ''}">
+              <span class="col-span-2 text-center text-[13px] font-semibold text-mist-400 mono">${s}</span>
+              <span class="col-span-3 text-center text-[12px] text-mist-500 font-medium mono">${prev}</span>
+              <div class="col-span-3">
+                <input type="number" step="0.5" inputmode="decimal" placeholder="0" value="${current.weight}"
+                  oninput="updateValue('${setKey}', 'weight', this.value)"
+                  class="w-full bg-ink-900 border border-white/10 text-center py-2 rounded-[10px] font-semibold text-white placeholder:text-mist-500/50">
+              </div>
+              <div class="col-span-2">
+                <input type="number" inputmode="numeric" placeholder="0" value="${current.reps}"
+                  oninput="updateValue('${setKey}', 'reps', this.value)"
+                  class="w-full bg-ink-900 border border-white/10 text-center py-2 rounded-[10px] font-semibold text-white placeholder:text-mist-500/50">
+              </div>
+              <div class="col-span-2 flex justify-center">
+                <button onclick="toggleSet('${setKey}', this)"
+                  class="check-btn rounded-xl flex items-center justify-center pressable ${
+                    current.done
+                      ? 'bg-aura-400 text-ink-950 shadow-[0_4px_12px_rgba(32,196,176,0.28)]'
+                      : 'bg-ink-900 border border-white/10 text-mist-500'
+                  }">
+                  <i data-lucide="check" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          `;
+        }
+
+        exCard.innerHTML = html;
+        container.appendChild(exCard);
+      });
+
+      lucide.createIcons();
+      updateHeaderStats();
+    }
+
+    function addExtraSet(dayKey, exIdx) {
+      const key = `${dayKey}_ex${exIdx}_count`;
+      const currentCount = activeData[key] || DEFAULT_ROUTINE[dayKey].exercises[exIdx].sets;
+      activeData[key] = currentCount + 1;
+      saveActiveData();
+      renderExercises();
+    }
+
+    function updateValue(key, field, val) {
+      if (!activeData[key]) activeData[key] = { weight: '', reps: '', done: false };
+      activeData[key][field] = val;
+      saveActiveData();
+      updateHeaderStats();
+    }
+
+    function toggleSet(key, btn) {
+      if (!activeData[key]) activeData[key] = { weight: '', reps: '', done: false };
+      activeData[key].done = !activeData[key].done;
+      saveActiveData();
+      renderExercises();
+
+      if (activeData[key].done) {
+        setTimer(90);
+      }
+    }
+
+    function updateHeaderStats() {
+      let totalTonnage = 0;
+      let completedCount = 0;
+      let totalCount = 0;
+
+      const dayData = DEFAULT_ROUTINE[currentDay];
+      dayData.exercises.forEach((ex, exIdx) => {
+        const setKeyPrefix = `${currentDay}_ex${exIdx}_`;
+        const totalSets = (activeData[setKeyPrefix + 'count'] || ex.sets);
+        totalCount += totalSets;
+
+        for (let s = 1; s <= totalSets; s++) {
+          const setKey = `${setKeyPrefix}s${s}`;
+          const current = activeData[setKey];
+          if (current && current.done) {
+            completedCount++;
+            const w = parseFloat(current.weight) || 0;
+            const r = parseFloat(current.reps) || 0;
+            totalTonnage += (w * r);
+          }
+        }
+      });
+
+      document.getElementById('live-tonnage').innerText = `${totalTonnage.toLocaleString()} kg`;
+      document.getElementById('live-completed-sets').innerText = `${completedCount}/${totalCount}`;
+      const pct = totalCount ? Math.round((completedCount / totalCount) * 100) : 0;
+      const bar = document.getElementById('session-progress');
+      if (bar) bar.style.width = `${pct}%`;
+    }
+
+    function saveActiveData() {
+      localStorage.setItem('aura_active_session', JSON.stringify(activeData));
+    }
+
+    function finishWorkout() {
+      let completedSets = 0;
+      let sessionTonnage = 0;
+      const sessionExercises = {};
+
+      const dayData = DEFAULT_ROUTINE[currentDay];
+      dayData.exercises.forEach((ex, exIdx) => {
+        const setsArray = [];
+        const setKeyPrefix = `${currentDay}_ex${exIdx}_`;
+        const totalSets = (activeData[setKeyPrefix + 'count'] || ex.sets);
+
+        for (let s = 1; s <= totalSets; s++) {
+          const setKey = `${setKeyPrefix}s${s}`;
+          const current = activeData[setKey];
+          if (current && current.done && current.weight && current.reps) {
+            completedSets++;
+            const w = parseFloat(current.weight);
+            const r = parseFloat(current.reps);
+            sessionTonnage += (w * r);
+            setsArray.push({ weight: w, reps: r });
+          }
+        }
+        if (setsArray.length > 0) {
+          sessionExercises[ex.name] = setsArray;
+        }
+      });
+
+      if (completedSets === 0) {
+        showModal("Falta una serie", "Marca al menos una serie completada antes de finalizar.");
+        return;
+      }
+
+      const logEntry = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }),
+        dayKey: currentDay,
+        name: dayData.name,
+        tonnage: sessionTonnage,
+        completedSets: completedSets,
+        exercises: sessionExercises
+      };
+
+      historyData.push(logEntry);
+      localStorage.setItem('aura_history', JSON.stringify(historyData));
+
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+
+      Object.keys(activeData).forEach(k => {
+        if (k.startsWith(`${currentDay}_`)) {
+          if (activeData[k] && typeof activeData[k] === 'object') {
+            activeData[k].done = false;
+          }
+        }
+      });
+      saveActiveData();
+      renderExercises();
+
+      setTimeout(() => {
+        showModal("Entrenamiento guardado", `Gran sesión. Tonelaje levantado: ${sessionTonnage.toLocaleString()} kg.`);
+      }, 280);
+    }
+
+    function switchTab(tab) {
+      if (tab === 'analytics') {
+        document.getElementById('tab-workout').classList.add('hidden');
+        document.getElementById('timer-widget').classList.add('hidden');
+        document.getElementById('tab-analytics').classList.remove('hidden');
+        renderHistoryList();
+        renderChart();
+      } else {
+        document.getElementById('tab-analytics').classList.add('hidden');
+        document.getElementById('tab-workout').classList.remove('hidden');
+        document.getElementById('timer-widget').classList.remove('hidden');
+      }
+      lucide.createIcons();
+    }
+
+    function renderHistoryList() {
+      const container = document.getElementById('history-list');
+      container.innerHTML = '';
+
+      if (historyData.length === 0) {
+        container.innerHTML = `<p class="text-mist-500 py-8 text-center text-[14px]">Aún no hay entrenamientos registrados.</p>`;
+        return;
+      }
+
+      historyData.slice().reverse().forEach(h => {
+        const row = document.createElement('div');
+        row.className = "py-3.5 flex justify-between items-center";
+        row.innerHTML = `
+          <div>
+            <p class="font-semibold text-white text-[15px]">${h.name}</p>
+            <p class="text-[12px] text-mist-400 mt-0.5">${h.date} · ${h.completedSets} series</p>
+          </div>
+          <span class="font-semibold text-aura-400 mono text-[14px]">${h.tonnage.toLocaleString()} kg</span>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    function renderChart() {
+      const ctx = document.getElementById('volumeChart').getContext('2d');
+      if (volumeChart) volumeChart.destroy();
+
+      const lastSessions = historyData.slice(-7);
+      const labels = lastSessions.map(s => s.date);
+      const data = lastSessions.map(s => s.tonnage);
+
+      const gradient = ctx.createLinearGradient(0, 0, 0, 180);
+      gradient.addColorStop(0, 'rgba(62, 224, 200, 0.28)');
+      gradient.addColorStop(1, 'rgba(62, 224, 200, 0)');
+
+      volumeChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels.length ? labels : ['Sin datos'],
+          datasets: [{
+            label: 'Volumen (kg)',
+            data: data.length ? data : [0],
+            borderColor: '#3ee0c8',
+            backgroundColor: gradient,
+            borderWidth: 2.5,
+            tension: 0.4,
+            fill: true,
+            pointBackgroundColor: '#3ee0c8',
+            pointBorderColor: '#07080b',
+            pointBorderWidth: 2,
+            pointRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#8a9bb0', font: { size: 11 } }, border: { display: false } },
+            y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#8a9bb0', font: { size: 11 } }, border: { display: false } }
+          }
+        }
+      });
+    }
+
+    renderTabs();
+    renderExercises();
+    updateTimerUI();
+    lucide.createIcons();
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>
