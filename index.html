@@ -219,12 +219,18 @@
       color: #fbbf24;
     }
 
-    .pr-chip {
-      color: #3ee0c8;
-      font-size: 10px;
+    .step-btn {
+      min-width: 44px;
+      min-height: 44px;
+      border-radius: 12px;
+      font-size: 15px;
       font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
+    }
+
+    textarea.note-input {
+      font-size: 16px;
+      -webkit-appearance: none;
+      appearance: none;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -236,7 +242,7 @@
   </style>
 </head>
 
-<body class="app-bg text-mist-50 min-h-screen select-none antialiased pb-36">
+<body class="app-bg text-mist-50 min-h-screen select-none antialiased pb-40">
 
   <header class="sticky top-0 z-30 glass border-b border-white/5 header-pad px-5 pb-3">
     <div class="max-w-xl mx-auto flex items-center justify-between">
@@ -259,7 +265,13 @@
   <main class="max-w-xl mx-auto px-4 mt-4">
 
     <div id="tab-workout">
-      <div class="grid grid-cols-4 gap-1 bg-ink-800/80 p-1 rounded-2xl hairline mb-4" id="day-selector"></div>
+      <div id="today-banner" class="hidden pressable mb-4 card rounded-2xl px-4 py-3 flex items-center justify-between gap-3" onclick="goToSuggestedDay()">
+        <div>
+          <p class="text-[11px] uppercase tracking-[0.14em] text-aura-400 font-semibold">Hoy toca</p>
+          <p class="text-[15px] font-semibold text-white mt-0.5" id="today-banner-name">Torso A</p>
+        </div>
+        <span class="text-[13px] font-semibold text-aura-400">Cambiar</span>
+      </div>
 
       <div class="card rounded-2xl px-4 py-3.5 mb-4">
         <div class="flex items-center justify-between mb-2.5">
@@ -283,10 +295,6 @@
           <span id="session-subtitle">Lunes · Empuje</span>
         </div>
         <p class="text-[11px] text-mist-500 mt-2" id="last-session-hint"></p>
-        <button onclick="copyLastSession()" class="pressable mt-3 w-full h-11 rounded-xl bg-white/[0.04] hairline text-[13px] font-semibold text-mist-200 flex items-center justify-center gap-1.5">
-          <i data-lucide="copy" class="w-4 h-4"></i>
-          Copiar última sesión
-        </button>
       </div>
 
       <div id="exercises-container" class="space-y-3"></div>
@@ -326,6 +334,27 @@
       </div>
 
       <div class="card rounded-2xl p-4">
+        <h3 class="text-[12px] font-semibold text-mist-400 uppercase tracking-[0.12em] mb-3">Marcas</h3>
+        <div class="grid grid-cols-3 gap-2" id="pr-cards"></div>
+      </div>
+
+      <div class="card rounded-2xl p-4">
+        <h3 class="text-[12px] font-semibold text-mist-400 uppercase tracking-[0.12em] mb-2">Peso corporal</h3>
+        <p class="text-[22px] font-semibold text-white mono" id="bw-latest">—</p>
+        <p class="text-[12px] text-mist-400 mt-1" id="bw-hint">Se pide al terminar el entreno</p>
+      </div>
+
+      <div class="card rounded-2xl p-4">
+        <h3 class="text-[12px] font-semibold text-mist-400 uppercase tracking-[0.12em] mb-3">Copia de seguridad</h3>
+        <p class="text-[13px] text-mist-400 mb-3">Mándatelo por WhatsApp o Mail. Si borras Safari, esto te salva el historial.</p>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="exportBackup()" class="pressable h-11 rounded-xl bg-aura-400 text-ink-950 font-semibold text-[13px]">Exportar</button>
+          <button onclick="document.getElementById('import-file').click()" class="pressable h-11 rounded-xl bg-white/[0.05] hairline font-semibold text-[13px]">Importar</button>
+        </div>
+        <input id="import-file" type="file" accept="application/json" class="hidden" onchange="importBackup(event)">
+      </div>
+
+      <div class="card rounded-2xl p-4">
         <h3 class="text-[12px] font-semibold text-mist-400 uppercase tracking-[0.12em] mb-3">Tonelaje por sesión</h3>
         <div class="h-48">
           <canvas id="volumeChart"></canvas>
@@ -357,10 +386,39 @@
         <button onclick="setTimer(60)" id="preset-60" class="pressable h-10 px-2.5 bg-white/[0.06] text-[13px] font-semibold rounded-xl hairline">60s</button>
         <button onclick="setTimer(90)" id="preset-90" class="pressable h-10 px-2.5 bg-white/[0.06] text-[13px] font-semibold rounded-xl hairline">90s</button>
         <button onclick="setTimer(120)" id="preset-120" class="pressable h-10 px-2.5 bg-white/[0.06] text-[13px] font-semibold rounded-xl hairline">2m</button>
-        <button onclick="toggleTimer()" id="timer-toggle-btn" class="pressable w-11 h-11 rounded-2xl bg-aura-400 text-ink-950 flex items-center justify-center ml-1 shadow-[0_6px_16px_rgba(32,196,176,0.28)]">
+        <button onclick="openPlates()" class="pressable w-11 h-11 rounded-2xl bg-white/[0.06] hairline flex items-center justify-center ml-1" title="Discos">
+          <i data-lucide="circle-dot" class="w-4 h-4"></i>
+        </button>
+        <button onclick="toggleTimer()" id="timer-toggle-btn" class="pressable w-11 h-11 rounded-2xl bg-aura-400 text-ink-950 flex items-center justify-center ml-0.5 shadow-[0_6px_16px_rgba(32,196,176,0.28)]">
           <i data-lucide="play" class="w-4 h-4 fill-current"></i>
         </button>
       </div>
+    </div>
+  </div>
+
+  <div id="plates-modal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-scrim absolute inset-0" onclick="closePlates()"></div>
+    <div class="absolute left-4 right-4 bottom-[max(24px,calc(var(--safe-bottom)+16px))] max-w-xl mx-auto card rounded-[24px] p-5">
+      <div class="w-10 h-1 rounded-full bg-white/15 mx-auto mb-4"></div>
+      <h3 class="text-[18px] font-semibold text-white text-center">Calculadora de discos</h3>
+      <p class="text-[13px] text-mist-400 text-center mt-1">Barra olímpica 20 kg · por lado</p>
+      <input id="plate-kg" type="number" step="0.5" inputmode="decimal" placeholder="Peso total" oninput="renderPlates()"
+        class="mt-4 w-full bg-ink-900 border border-white/10 text-center py-3 rounded-2xl font-semibold text-white">
+      <div id="plate-result" class="mt-4 text-center text-[15px] text-mist-200 leading-relaxed"></div>
+      <button onclick="closePlates()" class="pressable mt-5 w-full bg-aura-400 text-ink-950 font-semibold py-3.5 rounded-2xl text-[16px]">Cerrar</button>
+    </div>
+  </div>
+
+  <div id="bw-modal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-scrim absolute inset-0" onclick="skipBodyweight()"></div>
+    <div class="absolute left-4 right-4 bottom-[max(24px,calc(var(--safe-bottom)+16px))] max-w-xl mx-auto card rounded-[24px] p-5">
+      <div class="w-10 h-1 rounded-full bg-white/15 mx-auto mb-4"></div>
+      <h3 class="text-[18px] font-semibold text-white text-center">¿Peso corporal?</h3>
+      <p class="text-[15px] text-mist-400 text-center mt-2">Opcional. Sirve para seguir la recomposición.</p>
+      <input id="bw-input" type="number" step="0.1" inputmode="decimal" placeholder="kg"
+        class="mt-4 w-full bg-ink-900 border border-white/10 text-center py-3 rounded-2xl font-semibold text-white">
+      <button onclick="saveBodyweight()" class="pressable mt-5 w-full bg-aura-400 text-ink-950 font-semibold py-3.5 rounded-2xl text-[16px]">Guardar</button>
+      <button onclick="skipBodyweight()" class="pressable w-full py-3 text-[15px] font-semibold text-mist-400">Ahora no</button>
     </div>
   </div>
 
@@ -384,12 +442,12 @@
         subtitle: "Lunes · Empuje",
         short: "Lun",
         exercises: [
-          { name: "Press de banca plano", target: "3 × 6-8", sets: 3 },
-          { name: "Remo con barra / polea", target: "3 × 8-10", sets: 3 },
-          { name: "Press inclinado mancuernas", target: "3 × 10-12", sets: 3 },
-          { name: "Jalón al pecho prono", target: "3 × 10-12", sets: 3 },
-          { name: "Elevaciones laterales", target: "4 × 12-15", sets: 4 },
-          { name: "Extensiones tríceps polea", target: "3 × 10-12", sets: 3 }
+          { name: "Press de banca plano", target: "3 × 6-8", sets: 3, rest: 120 },
+          { name: "Remo con barra / polea", target: "3 × 8-10", sets: 3, rest: 120 },
+          { name: "Press inclinado mancuernas", target: "3 × 10-12", sets: 3, rest: 90 },
+          { name: "Jalón al pecho prono", target: "3 × 10-12", sets: 3, rest: 90 },
+          { name: "Elevaciones laterales", target: "4 × 12-15", sets: 4, rest: 60 },
+          { name: "Extensiones tríceps polea", target: "3 × 10-12", sets: 3, rest: 90 }
         ]
       },
       piernaA: {
@@ -397,11 +455,11 @@
         subtitle: "Martes · Cuádriceps",
         short: "Mar",
         exercises: [
-          { name: "Sentadilla trasera", target: "3 × 6-8", sets: 3 },
-          { name: "Peso muerto rumano", target: "3 × 8-10", sets: 3 },
-          { name: "Extensiones de cuádriceps", target: "3 × 12-15", sets: 3 },
-          { name: "Curl femoral tumbado", target: "3 × 10-12", sets: 3 },
-          { name: "Gemelos de pie", target: "4 × 12-15", sets: 4 }
+          { name: "Sentadilla trasera", target: "3 × 6-8", sets: 3, rest: 120 },
+          { name: "Peso muerto rumano", target: "3 × 8-10", sets: 3, rest: 120 },
+          { name: "Extensiones de cuádriceps", target: "3 × 12-15", sets: 3, rest: 90 },
+          { name: "Curl femoral tumbado", target: "3 × 10-12", sets: 3, rest: 90 },
+          { name: "Gemelos de pie", target: "4 × 12-15", sets: 4, rest: 60 }
         ]
       },
       torsoB: {
@@ -409,12 +467,12 @@
         subtitle: "Jueves · Tracción",
         short: "Jue",
         exercises: [
-          { name: "Press militar barra/manc", target: "3 × 6-8", sets: 3 },
-          { name: "Dominadas / Jalón neutro", target: "3 × 8-10", sets: 3 },
-          { name: "Cruces en poleas / Contractor", target: "3 × 12-15", sets: 3 },
-          { name: "Remo unilateral manc/máq", target: "3 × 10-12", sets: 3 },
-          { name: "Face Pull / Pájaros", target: "3 × 12-15", sets: 3 },
-          { name: "Curl de bíceps barra Z", target: "3 × 10-12", sets: 3 }
+          { name: "Press militar barra/manc", target: "3 × 6-8", sets: 3, rest: 120 },
+          { name: "Dominadas / Jalón neutro", target: "3 × 8-10", sets: 3, rest: 120 },
+          { name: "Cruces en poleas / Contractor", target: "3 × 12-15", sets: 3, rest: 90 },
+          { name: "Remo unilateral manc/máq", target: "3 × 10-12", sets: 3, rest: 90 },
+          { name: "Face Pull / Pájaros", target: "3 × 12-15", sets: 3, rest: 60 },
+          { name: "Curl de bíceps barra Z", target: "3 × 10-12", sets: 3, rest: 90 }
         ]
       },
       piernaB: {
@@ -422,19 +480,31 @@
         subtitle: "Viernes · Cadena post.",
         short: "Vie",
         exercises: [
-          { name: "Peso muerto convencional", target: "3 × 5-7", sets: 3 },
-          { name: "Sentadilla búlgara", target: "3 × 8-10/p", sets: 3 },
-          { name: "Curl femoral sentado", target: "3 × 10-12", sets: 3 },
-          { name: "Prensa inclinada", target: "3 × 10-12", sets: 3 },
-          { name: "Gemelos sentado", target: "4 × 12-15", sets: 4 }
+          { name: "Peso muerto convencional", target: "3 × 5-7", sets: 3, rest: 120 },
+          { name: "Sentadilla búlgara", target: "3 × 8-10/p", sets: 3, rest: 90 },
+          { name: "Curl femoral sentado", target: "3 × 10-12", sets: 3, rest: 90 },
+          { name: "Prensa inclinada", target: "3 × 10-12", sets: 3, rest: 90 },
+          { name: "Gemelos sentado", target: "4 × 12-15", sets: 4, rest: 60 }
         ]
       }
     };
+
+    const DAY_ORDER = ["torsoA", "piernaA", "torsoB", "piernaB"];
+    const LIFT_PRS = [
+      { label: "Banca", names: ["Press de banca plano"] },
+      { label: "Sentadilla", names: ["Sentadilla trasera"] },
+      { label: "Muerto", names: ["Peso muerto convencional", "Peso muerto rumano"] }
+    ];
+    const PLATES = [25, 20, 15, 10, 5, 2.5, 1.25];
+    const BAR_KG = 20;
 
     let currentDay = localStorage.getItem('aura_current_day') || "torsoA";
     if (!DEFAULT_ROUTINE[currentDay]) currentDay = "torsoA";
     let activeData = JSON.parse(localStorage.getItem('aura_active_session')) || {};
     let historyData = JSON.parse(localStorage.getItem('aura_history')) || [];
+    let exerciseNotes = JSON.parse(localStorage.getItem('aura_exercise_notes')) || {};
+    let bodyweightLog = JSON.parse(localStorage.getItem('aura_bodyweight')) || [];
+    let pendingFinishSummary = '';
     let volumeChart = null;
     let modalConfirmFn = null;
     let wakeLock = null;
@@ -469,9 +539,51 @@
       if (fn) fn();
     }
 
-    function closeModal() {
-      modalConfirmFn = null;
-      document.getElementById('app-modal').classList.add('hidden');
+    function escapeHtml(s) {
+      return String(s || '').replace(/[&<>"']/g, (c) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[c]));
+    }
+
+    function suggestedDay() {
+      if (!historyData.length) return "torsoA";
+      const lastKey = historyData[historyData.length - 1].dayKey;
+      const i = DAY_ORDER.indexOf(lastKey);
+      return DAY_ORDER[(i < 0 ? 0 : i + 1) % DAY_ORDER.length];
+    }
+
+    function dayHasDoneSets(dayKey) {
+      return Object.keys(activeData).some((k) => {
+        if (!k.startsWith(`${dayKey}_`) || !k.includes('_s')) return false;
+        return !!(activeData[k] && activeData[k].done);
+      });
+    }
+
+    function dayHasWeights(dayKey) {
+      return Object.keys(activeData).some((k) => {
+        if (!k.startsWith(`${dayKey}_`) || !k.includes('_s')) return false;
+        const v = activeData[k];
+        return v && (v.weight || v.reps);
+      });
+    }
+
+    function restForSetKey(key) {
+      const m = key.match(/^(torsoA|piernaA|torsoB|piernaB)_ex(\d+)_/);
+      if (!m) return 90;
+      const ex = DEFAULT_ROUTINE[m[1]].exercises[Number(m[2])];
+      return (ex && ex.rest) || 90;
+    }
+
+    function goToSuggestedDay() {
+      selectDay(suggestedDay());
+    }
+
+    function selectDay(k) {
+      currentDay = k;
+      localStorage.setItem('aura_current_day', currentDay);
+      autoFillIfEmpty(currentDay);
+      renderTabs();
+      renderExercises();
     }
 
     function getAudioCtx() {
@@ -655,21 +767,19 @@
         const item = DEFAULT_ROUTINE[k];
         const isActive = currentDay === k;
         const btn = document.createElement('button');
+        const isSuggested = k === suggestedDay();
         btn.className = `day-seg rounded-[14px] text-center transition flex flex-col items-center justify-center pressable ${
           isActive
             ? 'bg-aura-400 text-ink-950 font-semibold shadow-[0_6px_16px_rgba(32,196,176,0.22)]'
-            : 'text-mist-400'
+            : isSuggested
+              ? 'text-aura-300 bg-aura-400/10'
+              : 'text-mist-400'
         }`;
         btn.innerHTML = `
           <span class="text-[13px] leading-none">${item.name}</span>
           <span class="text-[10px] mt-1 ${isActive ? 'opacity-70' : 'opacity-80'}">${item.short}</span>
         `;
-        btn.onclick = () => {
-          currentDay = k;
-          localStorage.setItem('aura_current_day', currentDay);
-          renderTabs();
-          renderExercises();
-        };
+        btn.onclick = () => selectDay(k);
         nav.appendChild(btn);
       });
 
@@ -682,6 +792,14 @@
       const hint = document.getElementById('last-session-hint');
       if (hint) {
         hint.innerText = last ? `Última vez: ${last.date} · ${last.tonnage.toLocaleString()} kg` : 'Primera vez en este día';
+      }
+      const sug = suggestedDay();
+      const banner = document.getElementById('today-banner');
+      const bannerName = document.getElementById('today-banner-name');
+      if (banner && bannerName) {
+        bannerName.innerText = DEFAULT_ROUTINE[sug].name;
+        if (sug !== currentDay) banner.classList.remove('hidden');
+        else banner.classList.add('hidden');
       }
     }
 
@@ -714,27 +832,22 @@
 
         const lastRecords = getLastSessionRecord(ex.name);
 
+        const note = exerciseNotes[ex.name] || '';
+        const restLabel = ex.rest >= 120 ? '2 min' : `${ex.rest}s`;
+
         let html = `
-          <div class="flex items-start justify-between mb-3 gap-3">
+          <div class="flex items-start justify-between mb-2 gap-3">
             <div class="min-w-0">
               <h3 class="text-[15px] font-semibold text-white leading-snug">${ex.name}</h3>
-              <p class="text-[12px] text-aura-400 font-medium mt-0.5">${ex.target}</p>
+              <p class="text-[12px] text-aura-400 font-medium mt-0.5">${ex.target} · descanso ${restLabel}</p>
             </div>
-            <div class="flex items-center gap-1.5 shrink-0">
-              <button onclick="fillFromLast('${currentDay}', ${exIdx})" class="pressable text-[12px] font-semibold text-mist-200 bg-white/[0.05] hairline px-2.5 h-8 rounded-full">Copiar</button>
-              <button onclick="addExtraSet('${currentDay}', ${exIdx})" class="pressable text-[12px] font-semibold text-mist-200 bg-white/[0.05] hairline px-2.5 h-8 rounded-full flex items-center gap-1">
-                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-              </button>
-            </div>
+            <button onclick="addExtraSet('${currentDay}', ${exIdx})" class="pressable shrink-0 text-[12px] font-semibold text-mist-200 bg-white/[0.05] hairline w-8 h-8 rounded-full flex items-center justify-center">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+            </button>
           </div>
-
-          <div class="grid grid-cols-12 gap-2 text-[10px] uppercase tracking-[0.08em] font-semibold text-mist-500 px-1 mb-1.5">
-            <span class="col-span-2 text-center">Set</span>
-            <span class="col-span-3 text-center">Anterior</span>
-            <span class="col-span-3 text-center">Kg</span>
-            <span class="col-span-2 text-center">Reps</span>
-            <span class="col-span-2 text-center">Ok</span>
-          </div>
+          <input type="text" maxlength="80" placeholder="Nota: hombro, pump..." value="${escapeHtml(note)}"
+            oninput="saveNote(${exIdx}, this.value)"
+            class="note-input w-full mb-3 bg-ink-900 border border-white/10 px-3 py-2 rounded-xl text-white placeholder:text-mist-500/50">
         `;
 
         const setKeyPrefix = `${currentDay}_ex${exIdx}_`;
@@ -750,20 +863,12 @@
           const isPr = current.done && !isNaN(curW) && !isNaN(lastW) && curW > lastW;
 
           html += `
-            <div class="grid grid-cols-12 gap-2 items-center set-row px-1 rounded-xl ${current.done ? 'bg-aura-400/[0.08]' : ''}">
-              <span class="col-span-2 text-center text-[13px] font-semibold ${isPr ? 'text-aura-400' : 'text-mist-400'} mono">${s}${isPr ? '<span class="pr-chip block">PR</span>' : ''}</span>
-              <span class="col-span-3 text-center text-[12px] text-mist-500 font-medium mono">${prev}</span>
-              <div class="col-span-3">
-                <input type="number" step="0.5" inputmode="decimal" placeholder="0" value="${current.weight}" autocomplete="off"
-                  oninput="updateValue('${setKey}', 'weight', this.value)"
-                  class="w-full bg-ink-900 border border-white/10 text-center py-2 rounded-[10px] font-semibold text-white placeholder:text-mist-500/50">
-              </div>
-              <div class="col-span-2">
-                <input type="number" inputmode="numeric" placeholder="0" value="${current.reps}" autocomplete="off"
-                  oninput="updateValue('${setKey}', 'reps', this.value)"
-                  class="w-full bg-ink-900 border border-white/10 text-center py-2 rounded-[10px] font-semibold text-white placeholder:text-mist-500/50">
-              </div>
-              <div class="col-span-2 flex justify-center">
+            <div class="mb-2 p-2.5 rounded-xl ${current.done ? 'bg-aura-400/[0.08]' : 'bg-black/20'}">
+              <div class="flex items-center justify-between mb-2">
+                <div>
+                  <span class="text-[13px] font-semibold ${isPr ? 'text-aura-400' : 'text-white'}">Serie ${s}${isPr ? ' · PR' : ''}</span>
+                  <span class="text-[12px] text-mist-500 mono ml-2">ant. ${prev}</span>
+                </div>
                 <button onclick="toggleSet('${setKey}')"
                   class="check-btn rounded-xl flex items-center justify-center pressable ${
                     current.done
@@ -772,6 +877,30 @@
                   }">
                   <i data-lucide="check" class="w-4 h-4"></i>
                 </button>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <p class="text-[10px] uppercase tracking-[0.08em] text-mist-500 font-semibold mb-1">Kg</p>
+                  <div class="flex items-center gap-1">
+                    <button onclick="bump('${setKey}', 'weight', -2.5)" class="step-btn bg-ink-900 hairline">−</button>
+                    <input type="number" step="0.5" inputmode="decimal" placeholder="0" value="${current.weight}" autocomplete="off"
+                      data-key="${setKey}" data-field="weight"
+                      oninput="updateValue('${setKey}', 'weight', this.value)"
+                      class="min-w-0 flex-1 bg-ink-900 border border-white/10 text-center py-2 rounded-[10px] font-semibold text-white">
+                    <button onclick="bump('${setKey}', 'weight', 2.5)" class="step-btn bg-ink-900 hairline">+</button>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-[10px] uppercase tracking-[0.08em] text-mist-500 font-semibold mb-1">Reps</p>
+                  <div class="flex items-center gap-1">
+                    <button onclick="bump('${setKey}', 'reps', -1)" class="step-btn bg-ink-900 hairline">−</button>
+                    <input type="number" inputmode="numeric" placeholder="0" value="${current.reps}" autocomplete="off"
+                      data-key="${setKey}" data-field="reps"
+                      oninput="updateValue('${setKey}', 'reps', this.value)"
+                      class="min-w-0 flex-1 bg-ink-900 border border-white/10 text-center py-2 rounded-[10px] font-semibold text-white">
+                    <button onclick="bump('${setKey}', 'reps', 1)" class="step-btn bg-ink-900 hairline">+</button>
+                  </div>
+                </div>
               </div>
             </div>
           `;
@@ -786,44 +915,39 @@
       requestAnimationFrame(() => window.scrollTo(0, y));
     }
 
-    function fillFromLast(dayKey, exIdx) {
-      const ex = DEFAULT_ROUTINE[dayKey].exercises[exIdx];
-      const last = getLastSessionRecord(ex.name);
-      if (!last) {
-        showModal('Sin marca anterior', 'Todavía no hay una sesión guardada de este ejercicio.');
-        return;
-      }
-      const prefix = `${dayKey}_ex${exIdx}_`;
-      const totalSets = activeData[prefix + 'count'] || ex.sets;
-      let filled = 0;
-      for (let s = 1; s <= totalSets; s++) {
-        const prev = last[s - 1];
-        if (!prev) continue;
-        const key = `${prefix}s${s}`;
-        const cur = activeData[key] || { weight: '', reps: '', done: false };
-        activeData[key] = { ...cur, weight: prev.weight, reps: prev.reps };
-        filled++;
-      }
-      saveActiveData();
-      renderExercises();
-      if (!filled) showModal('Sin datos', 'La sesión anterior no tiene series para copiar.');
+    function saveNote(exIdx, val) {
+      const name = DEFAULT_ROUTINE[currentDay].exercises[exIdx].name;
+      exerciseNotes[name] = val;
+      localStorage.setItem('aura_exercise_notes', JSON.stringify(exerciseNotes));
     }
 
-    function copyLastSession() {
-      const last = getLastDaySession(currentDay);
-      if (!last || !last.exercises) {
-        showModal('Sin sesión anterior', 'Todavía no has guardado este día. Cuando lo completes, podrás copiarlo.');
-        return;
-      }
-      const dayData = DEFAULT_ROUTINE[currentDay];
+    function bump(key, field, delta) {
+      if (!activeData[key]) activeData[key] = { weight: '', reps: '', done: false };
+      let n = parseFloat(activeData[key][field]);
+      if (isNaN(n)) n = 0;
+      n = field === 'weight'
+        ? Math.max(0, Math.round((n + delta) * 2) / 2)
+        : Math.max(0, Math.round(n + delta));
+      activeData[key][field] = n;
+      saveActiveData();
+      const el = document.querySelector(`[data-key="${key}"][data-field="${field}"]`);
+      if (el) el.value = n;
+      updateHeaderStats();
+    }
+
+    function autoFillIfEmpty(dayKey) {
+      if (dayHasWeights(dayKey) || dayHasDoneSets(dayKey)) return false;
+      const last = getLastDaySession(dayKey);
+      if (!last || !last.exercises) return false;
+      const dayData = DEFAULT_ROUTINE[dayKey];
       dayData.exercises.forEach((ex, exIdx) => {
         const lastSets = last.exercises[ex.name];
         if (!lastSets) return;
-        const prefix = `${currentDay}_ex${exIdx}_`;
-        const totalSets = Math.max(activeData[prefix + 'count'] || ex.sets, lastSets.length);
+        const prefix = `${dayKey}_ex${exIdx}_`;
         if (lastSets.length > (activeData[prefix + 'count'] || ex.sets)) {
           activeData[prefix + 'count'] = lastSets.length;
         }
+        const totalSets = activeData[prefix + 'count'] || ex.sets;
         for (let s = 1; s <= totalSets; s++) {
           const prev = lastSets[s - 1];
           if (!prev) continue;
@@ -833,7 +957,7 @@
         }
       });
       saveActiveData();
-      renderExercises();
+      return true;
     }
 
     function addExtraSet(dayKey, exIdx) {
@@ -858,7 +982,7 @@
       renderExercises();
 
       if (activeData[key].done) {
-        setTimer(90);
+        setTimer(restForSetKey(key));
       }
     }
 
@@ -925,7 +1049,12 @@
         }
       });
 
-      return { completedSets, totalCount, sessionTonnage, sessionExercises, dayData };
+      const notes = {};
+      dayData.exercises.forEach((ex) => {
+        if (exerciseNotes[ex.name]) notes[ex.name] = exerciseNotes[ex.name];
+      });
+
+      return { completedSets, totalCount, sessionTonnage, sessionExercises, dayData, notes };
     }
 
     function finishWorkout() {
@@ -950,7 +1079,7 @@
     }
 
     function saveFinishedSession(session) {
-      const { completedSets, sessionTonnage, sessionExercises, dayData } = session;
+      const { completedSets, sessionTonnage, sessionExercises, dayData, notes } = session;
       const logEntry = {
         id: Date.now(),
         date: new Date().toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }),
@@ -958,7 +1087,8 @@
         name: dayData.name,
         tonnage: sessionTonnage,
         completedSets: completedSets,
-        exercises: sessionExercises
+        exercises: sessionExercises,
+        notes: notes || {}
       };
 
       historyData.push(logEntry);
@@ -978,12 +1108,16 @@
         }
       });
       saveActiveData();
+      currentDay = suggestedDay();
+      localStorage.setItem('aura_current_day', currentDay);
+      autoFillIfEmpty(currentDay);
       renderTabs();
       renderExercises();
 
-      setTimeout(() => {
-        showModal("Entrenamiento guardado", `Gran sesión.\n${completedSets} series · ${sessionTonnage.toLocaleString()} kg`);
-      }, 280);
+      pendingFinishSummary = `Gran sesión.\n${completedSets} series · ${sessionTonnage.toLocaleString()} kg`;
+      const lastBw = bodyweightLog.length ? bodyweightLog[bodyweightLog.length - 1].kg : '';
+      document.getElementById('bw-input').value = lastBw;
+      document.getElementById('bw-modal').classList.remove('hidden');
     }
 
     function switchTab(tab) {
@@ -992,6 +1126,8 @@
         document.getElementById('timer-widget').classList.add('hidden');
         document.getElementById('tab-analytics').classList.remove('hidden');
         renderStats();
+        renderPrs();
+        renderBodyweight();
         renderHistoryList();
         renderChart();
       } else {
@@ -1033,9 +1169,11 @@
       if (!h) return;
       const lines = Object.keys(h.exercises || {}).map((name) => {
         const sets = h.exercises[name].map(s => `${s.weight}×${s.reps}`).join('  ');
-        return `${name}\n${sets}`;
+        const note = (h.notes && h.notes[name]) ? `\nNota: ${h.notes[name]}` : '';
+        return `${name}\n${sets}${note}`;
       });
-      showModal(h.name, `${h.date} · ${h.tonnage.toLocaleString()} kg\n\n${lines.join('\n\n') || 'Sin detalle'}`);
+      const bw = h.bodyweight ? `\nPeso corporal: ${h.bodyweight} kg` : '';
+      showModal(h.name, `${h.date} · ${h.tonnage.toLocaleString()} kg${bw}\n\n${lines.join('\n\n') || 'Sin detalle'}`);
     }
 
     function renderHistoryList() {
@@ -1063,6 +1201,169 @@
         container.appendChild(row);
       });
       lucide.createIcons();
+    }
+
+    function renderPrs() {
+      const box = document.getElementById('pr-cards');
+      if (!box) return;
+      box.innerHTML = LIFT_PRS.map((lift) => {
+        let best = 0;
+        historyData.forEach((h) => {
+          lift.names.forEach((n) => {
+            (h.exercises && h.exercises[n] || []).forEach((s) => {
+              if (s.weight > best) best = s.weight;
+            });
+          });
+        });
+        return `<div class="text-center">
+          <p class="text-[11px] text-mist-400">${lift.label}</p>
+          <p class="text-[16px] font-semibold text-white mono mt-0.5">${best ? best + ' kg' : '—'}</p>
+        </div>`;
+      }).join('');
+    }
+
+    function renderBodyweight() {
+      const latest = document.getElementById('bw-latest');
+      const hint = document.getElementById('bw-hint');
+      if (!bodyweightLog.length) {
+        latest.innerText = '—';
+        hint.innerText = 'Se pide al terminar el entreno';
+        return;
+      }
+      const last = bodyweightLog[bodyweightLog.length - 1];
+      latest.innerText = `${last.kg} kg`;
+      hint.innerText = last.date;
+    }
+
+    function skipBodyweight() {
+      document.getElementById('bw-modal').classList.add('hidden');
+      showModal('Entrenamiento guardado', pendingFinishSummary || 'Sesión guardada');
+    }
+
+    function saveBodyweight() {
+      const kg = parseFloat(document.getElementById('bw-input').value);
+      document.getElementById('bw-modal').classList.add('hidden');
+      if (!isNaN(kg) && kg > 0) {
+        const last = historyData[historyData.length - 1];
+        const entry = {
+          id: Date.now(),
+          date: new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }),
+          kg
+        };
+        bodyweightLog.push(entry);
+        localStorage.setItem('aura_bodyweight', JSON.stringify(bodyweightLog));
+        if (last) {
+          last.bodyweight = kg;
+          localStorage.setItem('aura_history', JSON.stringify(historyData));
+        }
+      }
+      showModal('Entrenamiento guardado', pendingFinishSummary || 'Sesión guardada');
+    }
+
+    function openPlates(kg) {
+      const input = document.getElementById('plate-kg');
+      input.value = kg || '';
+      document.getElementById('plates-modal').classList.remove('hidden');
+      renderPlates();
+      setTimeout(() => input.focus(), 50);
+    }
+
+    function closePlates() {
+      document.getElementById('plates-modal').classList.add('hidden');
+    }
+
+    function renderPlates() {
+      const total = parseFloat(document.getElementById('plate-kg').value);
+      const out = document.getElementById('plate-result');
+      if (!total || total <= BAR_KG) {
+        out.innerText = `Pon un peso mayor de ${BAR_KG} kg (barra).`;
+        return;
+      }
+      let side = (total - BAR_KG) / 2;
+      if (Math.abs(side * 2 - (total - BAR_KG)) > 0.01) {
+        out.innerText = 'Ese peso no se puede cargar simétrico.';
+        return;
+      }
+      const used = [];
+      let remain = Math.round(side * 4) / 4;
+      PLATES.forEach((p) => {
+        let n = 0;
+        while (remain + 0.001 >= p) {
+          remain = Math.round((remain - p) * 100) / 100;
+          n++;
+        }
+        if (n) used.push(`${n}×${p}`);
+      });
+      if (remain > 0.2) {
+        out.innerText = `No cuadra con discos de gym. Sobra ${remain} kg por lado.`;
+        return;
+      }
+      out.innerHTML = `<p class="text-white font-semibold mb-1">${total} kg</p>
+        <p>Barra ${BAR_KG} + cada lado: ${used.length ? used.join(' + ') : 'solo barra'}</p>`;
+    }
+
+    async function exportBackup() {
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        history: historyData,
+        session: activeData,
+        notes: exerciseNotes,
+        bodyweight: bodyweightLog
+      };
+      const json = JSON.stringify(payload, null, 2);
+      const lines = historyData.slice().reverse().slice(0, 20).map((h) =>
+        `${h.date} · ${h.name} · ${h.tonnage} kg`
+      );
+      const text = `AuraLift\n${lines.join('\n') || 'Sin sesiones'}\n\n--- JSON ---\n${json}`;
+      try {
+        if (navigator.share) {
+          await navigator.share({ title: 'AuraLift backup', text });
+          return;
+        }
+      } catch (e) {}
+      try {
+        await navigator.clipboard.writeText(text);
+        showModal('Copiado', 'Pégalo en WhatsApp o Mail y envíatelo.');
+      } catch (e) {
+        showModal('No se pudo compartir', 'Copia el historial a mano desde Progreso.');
+      }
+    }
+
+    function importBackup(event) {
+      const file = event.target.files && event.target.files[0];
+      event.target.value = '';
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const data = JSON.parse(reader.result);
+          showModal('Importar copia', 'Esto sustituye el historial de este iPhone. ¿Seguro?', {
+            confirmText: 'Importar',
+            cancelText: 'Cancelar',
+            onConfirm: () => {
+              if (Array.isArray(data.history)) historyData = data.history;
+              if (data.session) activeData = data.session;
+              if (data.notes) exerciseNotes = data.notes;
+              if (Array.isArray(data.bodyweight)) bodyweightLog = data.bodyweight;
+              localStorage.setItem('aura_history', JSON.stringify(historyData));
+              localStorage.setItem('aura_active_session', JSON.stringify(activeData));
+              localStorage.setItem('aura_exercise_notes', JSON.stringify(exerciseNotes));
+              localStorage.setItem('aura_bodyweight', JSON.stringify(bodyweightLog));
+              renderTabs();
+              renderExercises();
+              renderStats();
+              renderPrs();
+              renderBodyweight();
+              renderHistoryList();
+              renderChart();
+              showModal('Listo', 'Copia restaurada.');
+            }
+          });
+        } catch (e) {
+          showModal('Archivo no válido', 'Ese archivo no es una copia de AuraLift.');
+        }
+      };
+      reader.readAsText(file);
     }
 
     function renderChart() {
@@ -1107,6 +1408,12 @@
       });
     }
 
+    const lastCompleted = historyData[historyData.length - 1];
+    if (lastCompleted && currentDay === lastCompleted.dayKey && !dayHasDoneSets(currentDay)) {
+      currentDay = suggestedDay();
+      localStorage.setItem('aura_current_day', currentDay);
+    }
+    autoFillIfEmpty(currentDay);
     renderTabs();
     renderExercises();
     updateTimerUI();
