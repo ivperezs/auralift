@@ -273,6 +273,8 @@
         <span class="text-[13px] font-semibold text-aura-400">Cambiar</span>
       </div>
 
+      <div class="grid grid-cols-4 gap-1 bg-ink-800/80 p-1 rounded-2xl hairline mb-4" id="day-selector"></div>
+
       <div class="card rounded-2xl px-4 py-3.5 mb-4">
         <div class="flex items-center justify-between mb-2.5">
           <div>
@@ -539,6 +541,12 @@
       if (fn) fn();
     }
 
+    function closeModal() {
+      modalConfirmFn = null;
+      const modal = document.getElementById('app-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
     function escapeHtml(s) {
       return String(s || '').replace(/[&<>"']/g, (c) => ({
         '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -760,6 +768,7 @@
 
     function renderTabs() {
       const nav = document.getElementById('day-selector');
+      if (!nav) return;
       nav.innerHTML = '';
 
       const keys = Object.keys(DEFAULT_ROUTINE);
