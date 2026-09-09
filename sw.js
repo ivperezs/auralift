@@ -1,4 +1,4 @@
-const CACHE = 'auralift-v4';
+const CACHE = 'auralift-v5';
 const ASSETS = [
   './',
   './index.html',

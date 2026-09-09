@@ -242,7 +242,7 @@
   </style>
 </head>
 
-<body class="app-bg text-mist-50 min-h-screen select-none antialiased pb-40">
+<body class="app-bg text-mist-50 min-h-screen select-none antialiased pb-44">
 
   <header class="sticky top-0 z-30 glass border-b border-white/5 header-pad px-5 pb-3">
     <div class="max-w-xl mx-auto flex items-center justify-between">
@@ -373,27 +373,30 @@
   </main>
 
   <div id="timer-widget" class="fixed bottom-0 left-0 right-0 max-w-xl mx-auto z-40 px-4 timer-dock">
-    <div class="timer-panel glass hairline rounded-[22px] px-3.5 py-3 shadow-[0_-8px_40px_rgba(0,0,0,0.45)] flex items-center justify-between">
-      <div class="flex items-center gap-3 min-w-0">
-        <div class="w-11 h-11 rounded-2xl bg-aura-400/12 border border-aura-400/20 flex items-center justify-center text-aura-400">
-          <i data-lucide="timer" class="w-5 h-5"></i>
+    <div class="timer-panel glass hairline rounded-[22px] px-3 py-3 shadow-[0_-8px_40px_rgba(0,0,0,0.45)]">
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-11 h-11 rounded-2xl bg-aura-400/12 border border-aura-400/20 flex items-center justify-center text-aura-400 shrink-0">
+            <i data-lucide="timer" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <p class="text-[11px] text-mist-400 font-semibold tracking-[0.12em] uppercase">Descanso</p>
+            <span id="timer-display" class="text-[22px] font-semibold text-white mono tracking-tight">01:30</span>
+          </div>
         </div>
-        <div>
-          <p class="text-[11px] text-mist-400 font-semibold tracking-[0.12em] uppercase">Descanso</p>
-          <span id="timer-display" class="text-[22px] font-semibold text-white mono tracking-tight">01:30</span>
+        <div class="flex items-center gap-2 shrink-0">
+          <button onclick="openPlates()" class="pressable w-11 h-11 rounded-2xl bg-white/[0.06] hairline flex items-center justify-center">
+            <i data-lucide="layers" class="w-4 h-4"></i>
+          </button>
+          <button onclick="toggleTimer()" id="timer-toggle-btn" class="pressable w-11 h-11 rounded-2xl bg-aura-400 text-ink-950 flex items-center justify-center shadow-[0_6px_16px_rgba(32,196,176,0.28)]">
+            <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+          </button>
         </div>
       </div>
-
-      <div class="flex items-center gap-1">
-        <button onclick="setTimer(60)" id="preset-60" class="pressable h-10 px-2.5 bg-white/[0.06] text-[13px] font-semibold rounded-xl hairline">60s</button>
-        <button onclick="setTimer(90)" id="preset-90" class="pressable h-10 px-2.5 bg-white/[0.06] text-[13px] font-semibold rounded-xl hairline">90s</button>
-        <button onclick="setTimer(120)" id="preset-120" class="pressable h-10 px-2.5 bg-white/[0.06] text-[13px] font-semibold rounded-xl hairline">2m</button>
-        <button onclick="openPlates()" class="pressable w-11 h-11 rounded-2xl bg-white/[0.06] hairline flex items-center justify-center ml-1" title="Discos">
-          <i data-lucide="circle-dot" class="w-4 h-4"></i>
-        </button>
-        <button onclick="toggleTimer()" id="timer-toggle-btn" class="pressable w-11 h-11 rounded-2xl bg-aura-400 text-ink-950 flex items-center justify-center ml-0.5 shadow-[0_6px_16px_rgba(32,196,176,0.28)]">
-          <i data-lucide="play" class="w-4 h-4 fill-current"></i>
-        </button>
+      <div class="grid grid-cols-3 gap-2 mt-2.5">
+        <button onclick="setTimer(60)" id="preset-60" class="pressable h-10 text-[13px] font-semibold rounded-xl hairline bg-white/[0.06]">60s</button>
+        <button onclick="setTimer(90)" id="preset-90" class="pressable h-10 text-[13px] font-semibold rounded-xl hairline bg-white/[0.06]">90s</button>
+        <button onclick="setTimer(120)" id="preset-120" class="pressable h-10 text-[13px] font-semibold rounded-xl hairline bg-white/[0.06]">2m</button>
       </div>
     </div>
   </div>
@@ -673,7 +676,7 @@
         const btn = document.getElementById(`preset-${sec}`);
         if (!btn) return;
         const on = timerPreset === sec;
-        btn.className = `pressable h-10 px-2.5 text-[13px] font-semibold rounded-xl hairline ${
+        btn.className = `pressable h-10 w-full text-[13px] font-semibold rounded-xl hairline ${
           on ? 'bg-aura-400 text-ink-950' : 'bg-white/[0.06]'
         }`;
       });
