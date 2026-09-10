@@ -271,7 +271,6 @@
         </div>
         <div class="min-w-0">
           <h1 class="text-[17px] font-semibold tracking-tight text-ink-950 leading-none">AuraLift</h1>
-          <p class="text-[12px] text-mist-400 mt-1 font-medium" id="header-sub">Recomposición · 4 días</p>
         </div>
       </div>
       <button onclick="switchTab('analytics')" class="pressable text-[13px] font-semibold bg-black/[0.05] text-ink-900 px-3.5 py-2 rounded-full hairline flex items-center gap-1.5 shrink-0">
@@ -287,18 +286,18 @@
       <div id="today-banner" class="hidden pressable mb-4 card rounded-2xl px-4 py-3 flex items-center justify-between gap-3" onclick="goToSuggestedDay()">
         <div>
           <p class="text-[11px] uppercase tracking-[0.14em] text-aura-400 font-semibold">Hoy toca</p>
-          <p class="text-[15px] font-semibold text-ink-950 mt-0.5" id="today-banner-name">Torso A</p>
+          <p class="text-[15px] font-semibold text-ink-950 mt-0.5" id="today-banner-name"></p>
         </div>
         <span class="text-[13px] font-semibold text-aura-400">Cambiar</span>
       </div>
 
-      <div class="grid grid-cols-4 gap-1 bg-ink-800/80 p-1 rounded-2xl hairline mb-4" id="day-selector"></div>
+      <div class="flex gap-1 bg-ink-800/80 p-1 rounded-2xl hairline mb-4 overflow-x-auto" id="day-selector"></div>
 
       <div class="card rounded-2xl px-4 py-3.5 mb-4">
         <div class="flex items-center justify-between mb-2.5">
           <div>
             <p class="text-[11px] uppercase tracking-[0.14em] text-mist-400 font-semibold">Sesión de hoy</p>
-            <p class="text-[15px] font-semibold text-ink-950 mt-0.5" id="session-title">Torso A</p>
+            <p class="text-[15px] font-semibold text-ink-950 mt-0.5" id="session-title"></p>
           </div>
           <div class="text-right">
             <p class="text-[11px] text-mist-400">Volumen</p>
@@ -313,7 +312,7 @@
             <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-aura-400"></i>
             Series <span class="text-ink-950 font-semibold mono ml-1" id="live-completed-sets">0/0</span>
           </span>
-          <span id="session-subtitle">Lunes · Empuje</span>
+          <span id="session-subtitle"></span>
         </div>
         <p class="text-[11px] text-mist-500 mt-2" id="last-session-hint"></p>
       </div>
@@ -334,9 +333,12 @@
           <p class="text-[11px] uppercase tracking-[0.14em] text-mist-400 font-semibold">Analítica</p>
           <h2 class="text-[20px] font-semibold text-ink-950 mt-0.5">Historial y progreso</h2>
         </div>
-        <button onclick="switchTab('workout')" class="pressable text-[13px] font-semibold text-aura-400 flex items-center gap-1 px-3 py-2 rounded-full bg-aura-400/10">
-          <i data-lucide="chevron-left" class="w-4 h-4"></i> Entrenar
-        </button>
+        <div class="flex items-center gap-2">
+          <button onclick="openRoutineEditor()" class="pressable text-[13px] font-semibold text-ink-900 px-3 py-2 rounded-full bg-black/[0.05] hairline">Rutina</button>
+          <button onclick="switchTab('workout')" class="pressable text-[13px] font-semibold text-aura-400 flex items-center gap-1 px-3 py-2 rounded-full bg-aura-400/10">
+            <i data-lucide="chevron-left" class="w-4 h-4"></i> Entrenar
+          </button>
+        </div>
       </div>
 
       <div class="grid grid-cols-3 gap-2">
@@ -444,6 +446,15 @@
     </div>
   </div>
 
+  <div id="setup-overlay" class="fixed inset-0 z-[60] hidden overflow-y-auto app-bg">
+    <div class="max-w-xl mx-auto px-4 pb-10" style="padding-top: max(20px, calc(var(--safe-top) + 16px));">
+      <p class="text-[11px] uppercase tracking-[0.14em] text-aura-400 font-semibold" id="setup-kicker">Nueva rutina</p>
+      <h2 class="text-[26px] font-semibold text-ink-950 mt-1" id="setup-title">Tu entrenamiento</h2>
+      <p class="text-[15px] text-mist-400 mt-2" id="setup-lead">Elige cuántos días entrenas a la semana.</p>
+      <div id="setup-body" class="mt-6"></div>
+    </div>
+  </div>
+
   <div id="plates-modal" class="fixed inset-0 z-50 hidden">
     <div class="modal-scrim absolute inset-0" onclick="closePlates()"></div>
     <div class="absolute left-4 right-4 bottom-[max(24px,calc(var(--safe-bottom)+16px))] max-w-xl mx-auto card rounded-[24px] p-5">
@@ -462,7 +473,7 @@
     <div class="absolute left-4 right-4 bottom-[max(24px,calc(var(--safe-bottom)+16px))] max-w-xl mx-auto card rounded-[24px] p-5">
       <div class="w-10 h-1 rounded-full bg-black/10 mx-auto mb-4"></div>
       <h3 class="text-[18px] font-semibold text-ink-950 text-center">¿Peso corporal?</h3>
-      <p class="text-[15px] text-mist-400 text-center mt-2">Opcional. Sirve para seguir la recomposición.</p>
+      <p class="text-[15px] text-mist-400 text-center mt-2">Opcional. Sirve para ver cómo cambia tu peso.</p>
       <input id="bw-input" type="number" step="0.1" inputmode="decimal" placeholder="kg"
         class="mt-4 w-full bg-white border border-black/10 text-center py-3 rounded-2xl font-semibold text-ink-950">
       <button onclick="saveBodyweight()" class="pressable mt-5 w-full bg-aura-400 text-white font-semibold py-3.5 rounded-2xl text-[16px]">Guardar</button>
@@ -537,17 +548,66 @@
       }
     };
 
-    const DAY_ORDER = ["torsoA", "piernaA", "torsoB", "piernaB"];
-    const LIFT_PRS = [
-      { label: "Banca", names: ["Press de banca plano"] },
-      { label: "Sentadilla", names: ["Sentadilla trasera"] },
-      { label: "Muerto", names: ["Peso muerto convencional", "Peso muerto rumano"] }
-    ];
+    function templateToRoutine() {
+      return {
+        days: Object.keys(DEFAULT_ROUTINE).map((id) => ({
+          id,
+          name: DEFAULT_ROUTINE[id].name,
+          subtitle: DEFAULT_ROUTINE[id].subtitle || '',
+          short: DEFAULT_ROUTINE[id].short,
+          exercises: DEFAULT_ROUTINE[id].exercises.map((ex) => ({ ...ex }))
+        }))
+      };
+    }
+
+    function loadRoutine() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('aura_routine') || 'null');
+        if (saved && Array.isArray(saved.days) && saved.days.length) return saved;
+      } catch (e) {}
+      if (localStorage.getItem('aura_history') || localStorage.getItem('aura_active_session')) {
+        const migrated = templateToRoutine();
+        localStorage.setItem('aura_routine', JSON.stringify(migrated));
+        return migrated;
+      }
+      return null;
+    }
+
+    function saveRoutine(next) {
+      routine = next;
+      localStorage.setItem('aura_routine', JSON.stringify(routine));
+    }
+
+    function getDay(id) {
+      if (!routine || !routine.days || !routine.days.length) return null;
+      return routine.days.find((d) => d.id === id) || null;
+    }
+
+    function ensureCurrentDay() {
+      if (routine && !getDay(currentDay)) {
+        currentDay = routine.days[0].id;
+        localStorage.setItem('aura_current_day', currentDay);
+      }
+    }
+
+    function dayIds() {
+      return (routine && routine.days || []).map((d) => d.id);
+    }
+
     const PLATES = [25, 20, 15, 10, 5, 2.5, 1.25];
     const BAR_KG = 20;
 
-    let currentDay = localStorage.getItem('aura_current_day') || "torsoA";
-    if (!DEFAULT_ROUTINE[currentDay]) currentDay = "torsoA";
+    let routine = loadRoutine();
+    let setupDraft = null;
+    let setupStep = 1;
+    let setupDayIndex = 0;
+    let setupEditing = false;
+
+    let currentDay = localStorage.getItem('aura_current_day');
+    if (routine && !getDay(currentDay)) {
+      currentDay = routine.days[0].id;
+      localStorage.setItem('aura_current_day', currentDay);
+    }
     let activeData = JSON.parse(localStorage.getItem('aura_active_session')) || {};
     let historyData = JSON.parse(localStorage.getItem('aura_history')) || [];
     let bodyweightLog = JSON.parse(localStorage.getItem('aura_bodyweight')) || [];
@@ -599,11 +659,259 @@
       }[c]));
     }
 
+    function emptySetupDay(i) {
+      return {
+        id: 'dia_' + (i + 1),
+        name: 'Día ' + (i + 1),
+        subtitle: '',
+        short: 'D' + (i + 1),
+        exercises: [{ name: '', target: '3 × 8-12', sets: 3 }]
+      };
+    }
+
+    function targetRange(ex) {
+      const t = String((ex && ex.target) || '');
+      const m = t.match(/×\s*(.+)$/);
+      return (m ? m[1] : t || '8-12').trim();
+    }
+
+    function uniqueDayIds(days) {
+      const used = new Set();
+      return days.map((d, i) => {
+        let id = String(d.id || '').trim() || ('dia_' + (i + 1));
+        const base = id;
+        let n = 2;
+        while (used.has(id)) id = base + '_' + n++;
+        used.add(id);
+        return { ...d, id };
+      });
+    }
+
+    function openRoutineEditor() {
+      startSetup(true);
+    }
+
+    function startSetup(editing) {
+      setupEditing = !!editing;
+      setupDayIndex = 0;
+      if (setupEditing && routine && routine.days && routine.days.length) {
+        setupDraft = JSON.parse(JSON.stringify(routine));
+        setupStep = 1;
+      } else {
+        setupDraft = { days: [emptySetupDay(0), emptySetupDay(1), emptySetupDay(2)] };
+        setupStep = 1;
+      }
+      document.getElementById('setup-overlay').classList.remove('hidden');
+      renderSetup();
+    }
+
+    function closeSetup() {
+      if (!routine) return;
+      document.getElementById('setup-overlay').classList.add('hidden');
+    }
+
+    function setSetupDayCount(n) {
+      n = Math.max(1, Math.min(7, parseInt(n, 10) || 3));
+      const days = (setupDraft.days || []).slice(0, n);
+      while (days.length < n) days.push(emptySetupDay(days.length));
+      setupDraft.days = days;
+      renderSetup();
+    }
+
+    function useTemplateRoutine() {
+      setupDraft = templateToRoutine();
+      setupStep = 2;
+      setupDayIndex = 0;
+      renderSetup();
+    }
+
+    function setupGoNames() {
+      setupStep = 2;
+      setupDayIndex = 0;
+      renderSetup();
+    }
+
+    function setupGoExercises(i) {
+      setupDayIndex = i;
+      setupStep = 3;
+      renderSetup();
+    }
+
+    function setupUpdateDay(i, field, value) {
+      if (!setupDraft.days[i]) return;
+      setupDraft.days[i][field] = value;
+      if (field === 'name') {
+        const name = String(value || '').trim();
+        setupDraft.days[i].short = name ? name.slice(0, 3).toUpperCase() : ('D' + (i + 1));
+      }
+    }
+
+    function setupUpdateEx(i, exIdx, field, value) {
+      const ex = setupDraft.days[i] && setupDraft.days[i].exercises[exIdx];
+      if (!ex) return;
+      if (field === 'sets') {
+        ex.sets = Math.max(1, Math.min(10, parseInt(value, 10) || 3));
+        ex.target = `${ex.sets} × ${targetRange(ex)}`;
+      } else if (field === 'range') {
+        ex.target = `${ex.sets || 3} × ${String(value || '8-12').trim()}`;
+      } else {
+        ex[field] = value;
+      }
+    }
+
+    function setupAddExercise(i) {
+      setupDraft.days[i].exercises.push({ name: '', target: '3 × 8-12', sets: 3 });
+      renderSetup();
+    }
+
+    function setupRemoveExercise(i, exIdx) {
+      const list = setupDraft.days[i].exercises;
+      if (list.length <= 1) {
+        list[0] = { name: '', target: '3 × 8-12', sets: 3 };
+      } else {
+        list.splice(exIdx, 1);
+      }
+      renderSetup();
+    }
+
+    function sanitizeDraft(draft) {
+      const days = uniqueDayIds((draft.days || []).map((d, i) => {
+        const name = String(d.name || ('Día ' + (i + 1))).trim();
+        const exercises = (d.exercises || []).map((ex) => {
+          const exName = String(ex.name || '').trim();
+          const sets = Math.max(1, Math.min(10, parseInt(ex.sets, 10) || 3));
+          const range = targetRange(ex);
+          return { name: exName, sets, target: `${sets} × ${range}` };
+        }).filter((ex) => ex.name);
+        return {
+          id: d.id,
+          name,
+          subtitle: String(d.subtitle || '').trim(),
+          short: String(d.short || name.slice(0, 3) || ('D' + (i + 1))).trim(),
+          exercises
+        };
+      })).filter((d) => d.exercises.length);
+      return { days };
+    }
+
+    function setupAdvanceFromExercises() {
+      const day = setupDraft.days[setupDayIndex];
+      const has = (day.exercises || []).some((e) => String(e.name || '').trim());
+      if (!has) {
+        showModal('Faltan ejercicios', 'Ponle nombre al menos a un ejercicio de este día.');
+        return;
+      }
+      if (setupDayIndex >= setupDraft.days.length - 1) finishSetup();
+      else setupGoExercises(setupDayIndex + 1);
+    }
+
+    function finishSetup() {
+      const next = sanitizeDraft(setupDraft);
+      if (!next.days.length || next.days.length !== setupDraft.days.length) {
+        showModal('Rutina incompleta', 'Cada día necesita un nombre y al menos un ejercicio.');
+        return;
+      }
+      saveRoutine(next);
+      ensureCurrentDay();
+      document.getElementById('setup-overlay').classList.add('hidden');
+      autoFillIfEmpty(currentDay);
+      renderTabs();
+      renderExercises();
+      updateTimerUI();
+      renderStats();
+      lucide.createIcons();
+    }
+
+    function renderSetup() {
+      const kicker = document.getElementById('setup-kicker');
+      const title = document.getElementById('setup-title');
+      const lead = document.getElementById('setup-lead');
+      const body = document.getElementById('setup-body');
+      if (!body) return;
+      const n = (setupDraft.days || []).length;
+
+      if (setupStep === 1) {
+        kicker.innerText = setupEditing ? 'Editar rutina' : 'Primera vez';
+        title.innerText = '¿Cuántos días entrenas?';
+        lead.innerText = 'Luego eliges los ejercicios de cada día. Lo puedes cambiar cuando quieras.';
+        body.innerHTML = `
+          <div class="grid grid-cols-4 gap-2">
+            ${[1, 2, 3, 4, 5, 6, 7].map((d) => `
+              <button onclick="setSetupDayCount(${d})" class="pressable py-4 rounded-2xl font-semibold ${n === d ? 'bg-aura-400 text-white' : 'card text-ink-950'}">${d}</button>
+            `).join('')}
+          </div>
+          ${!setupEditing ? `<button onclick="useTemplateRoutine()" class="pressable mt-5 w-full text-[14px] font-semibold text-mist-400">Usar ejemplo de 4 días (torso / pierna)</button>` : ''}
+          <button onclick="setupGoNames()" class="pressable mt-4 w-full bg-aura-400 text-white font-semibold py-3.5 rounded-2xl text-[16px]">Continuar</button>
+          ${setupEditing ? `<button onclick="closeSetup()" class="pressable mt-2 w-full text-mist-400 py-3">Cancelar</button>` : ''}
+        `;
+        return;
+      }
+
+      if (setupStep === 2) {
+        kicker.innerText = `Paso 2 · ${n} ${n === 1 ? 'día' : 'días'}`;
+        title.innerText = 'Nombra cada día';
+        lead.innerText = 'Por ejemplo Torso, Pierna, Push o el nombre que uses en el gym.';
+        body.innerHTML = setupDraft.days.map((d, i) => `
+          <div class="card rounded-2xl p-4 ${i ? 'mt-3' : ''}">
+            <p class="text-[11px] uppercase tracking-[0.12em] text-mist-400 font-semibold mb-2">Día ${i + 1}</p>
+            <input type="text" value="${escapeHtml(d.name)}" placeholder="Nombre del día"
+              oninput="setupUpdateDay(${i}, 'name', this.value)"
+              class="w-full bg-white border border-black/10 px-3 py-3 rounded-2xl font-semibold text-ink-950">
+            <input type="text" value="${escapeHtml(d.subtitle || '')}" placeholder="Opcional: lunes, cadena posterior…"
+              oninput="setupUpdateDay(${i}, 'subtitle', this.value)"
+              class="mt-2 w-full bg-white border border-black/10 px-3 py-3 rounded-2xl text-[15px] text-ink-950">
+          </div>
+        `).join('') + `
+          <button onclick="setupGoExercises(0)" class="pressable mt-5 w-full bg-aura-400 text-white font-semibold py-3.5 rounded-2xl text-[16px]">Añadir ejercicios</button>
+          <button onclick="setupStep=1;renderSetup()" class="pressable mt-2 w-full text-mist-400 py-3">Volver</button>
+        `;
+        return;
+      }
+
+      const day = setupDraft.days[setupDayIndex] || setupDraft.days[0];
+      const i = setupDayIndex;
+      const isLast = i >= setupDraft.days.length - 1;
+      kicker.innerText = `Día ${i + 1} de ${setupDraft.days.length}`;
+      title.innerText = day.name || ('Día ' + (i + 1));
+      lead.innerText = 'Nombre, series y rango de repeticiones de cada ejercicio.';
+      body.innerHTML = (day.exercises || []).map((ex, exIdx) => `
+        <div class="card rounded-2xl p-4 ${exIdx ? 'mt-3' : ''}">
+          <div class="flex items-start justify-between gap-2 mb-2">
+            <p class="text-[11px] uppercase tracking-[0.12em] text-mist-400 font-semibold">Ejercicio ${exIdx + 1}</p>
+            <button onclick="setupRemoveExercise(${i}, ${exIdx})" class="pressable text-[12px] font-semibold text-mist-400">Quitar</button>
+          </div>
+          <input type="text" value="${escapeHtml(ex.name)}" placeholder="Press banca, sentadilla…"
+            oninput="setupUpdateEx(${i}, ${exIdx}, 'name', this.value)"
+            class="w-full bg-white border border-black/10 px-3 py-3 rounded-2xl font-semibold text-ink-950">
+          <div class="grid grid-cols-2 gap-2 mt-2">
+            <div>
+              <p class="text-[10px] uppercase tracking-[0.08em] text-mist-500 font-semibold mb-1">Series</p>
+              <input type="number" inputmode="numeric" min="1" max="10" value="${ex.sets || 3}"
+                oninput="setupUpdateEx(${i}, ${exIdx}, 'sets', this.value)"
+                class="w-full bg-white border border-black/10 px-3 py-3 rounded-2xl font-semibold text-ink-950 text-center">
+            </div>
+            <div>
+              <p class="text-[10px] uppercase tracking-[0.08em] text-mist-500 font-semibold mb-1">Reps</p>
+              <input type="text" value="${escapeHtml(targetRange(ex))}" placeholder="8-12"
+                oninput="setupUpdateEx(${i}, ${exIdx}, 'range', this.value)"
+                class="w-full bg-white border border-black/10 px-3 py-3 rounded-2xl font-semibold text-ink-950 text-center">
+            </div>
+          </div>
+        </div>
+      `).join('') + `
+        <button onclick="setupAddExercise(${i})" class="pressable mt-3 w-full card py-3.5 rounded-2xl font-semibold text-mist-400">+ Otro ejercicio</button>
+        <button onclick="setupAdvanceFromExercises()" class="pressable mt-4 w-full bg-aura-400 text-white font-semibold py-3.5 rounded-2xl text-[16px]">${isLast ? 'Guardar rutina' : 'Siguiente día'}</button>
+        <button onclick="${i > 0 ? 'setupGoExercises(' + (i - 1) + ')' : 'setupStep=2;renderSetup()'}" class="pressable mt-2 w-full text-mist-400 py-3">Volver</button>
+      `;
+    }
+
     function suggestedDay() {
-      if (!historyData.length) return "torsoA";
+      const ids = dayIds();
+      if (!ids.length) return currentDay;
+      if (!historyData.length) return ids[0];
       const lastKey = historyData[historyData.length - 1].dayKey;
-      const i = DAY_ORDER.indexOf(lastKey);
-      return DAY_ORDER[(i < 0 ? 0 : i + 1) % DAY_ORDER.length];
+      const i = ids.indexOf(lastKey);
+      return ids[(i < 0 ? 0 : i + 1) % ids.length];
     }
 
     function dayHasDoneSets(dayKey) {
@@ -811,13 +1119,13 @@
       if (!nav) return;
       nav.innerHTML = '';
 
-      const keys = Object.keys(DEFAULT_ROUTINE);
+      const keys = dayIds();
       keys.forEach(k => {
-        const item = DEFAULT_ROUTINE[k];
+        const item = getDay(k);
         const isActive = currentDay === k;
         const btn = document.createElement('button');
         const isSuggested = k === suggestedDay();
-        btn.className = `day-seg rounded-[14px] text-center transition flex flex-col items-center justify-center pressable ${
+        btn.className = `day-seg rounded-[14px] text-center transition flex flex-col items-center justify-center pressable flex-1 min-w-[4.4rem] ${
           isActive
             ? 'bg-aura-400 text-white font-semibold shadow-[0_6px_16px_rgba(14,154,134,0.22)]'
             : isSuggested
@@ -825,18 +1133,18 @@
               : 'text-mist-400'
         }`;
         btn.innerHTML = `
-          <span class="text-[13px] leading-none">${item.name}</span>
-          <span class="text-[10px] mt-1 ${isActive ? 'opacity-70' : 'opacity-80'}">${item.short}</span>
+          <span class="text-[13px] leading-none">${escapeHtml(item.name)}</span>
+          <span class="text-[10px] mt-1 ${isActive ? 'opacity-70' : 'opacity-80'}">${escapeHtml(item.short || ('D' + (keys.indexOf(k) + 1)))}</span>
         `;
         btn.onclick = () => selectDay(k);
         nav.appendChild(btn);
       });
 
-      const day = DEFAULT_ROUTINE[currentDay];
+      const day = getDay(currentDay);
       const titleEl = document.getElementById('session-title');
       const subEl = document.getElementById('session-subtitle');
-      if (titleEl) titleEl.innerText = day.name;
-      if (subEl) subEl.innerText = day.subtitle;
+      if (titleEl) titleEl.innerText = day ? day.name : '';
+      if (subEl) subEl.innerText = day && day.subtitle ? day.subtitle : '';
       const last = getLastDaySession(currentDay);
       const hint = document.getElementById('last-session-hint');
       if (hint) {
@@ -845,10 +1153,13 @@
       const sug = suggestedDay();
       const banner = document.getElementById('today-banner');
       const bannerName = document.getElementById('today-banner-name');
-      if (banner && bannerName) {
-        bannerName.innerText = DEFAULT_ROUTINE[sug].name;
+      const sugDay = getDay(sug);
+      if (banner && bannerName && sugDay) {
+        bannerName.innerText = sugDay.name;
         if (sug !== currentDay) banner.classList.remove('hidden');
         else banner.classList.add('hidden');
+      } else if (banner) {
+        banner.classList.add('hidden');
       }
     }
 
@@ -872,8 +1183,10 @@
     function renderExercises() {
       const y = window.scrollY;
       const container = document.getElementById('exercises-container');
+      if (!container) return;
       container.innerHTML = '';
-      const dayData = DEFAULT_ROUTINE[currentDay];
+      const dayData = getDay(currentDay);
+      if (!dayData) return;
 
       dayData.exercises.forEach((ex, exIdx) => {
         const exCard = document.createElement('div');
@@ -887,8 +1200,8 @@
         let html = `
           <div class="flex items-start justify-between mb-3 gap-3">
             <div class="min-w-0">
-              <h3 class="text-[15px] font-semibold text-ink-950 leading-snug">${ex.name}</h3>
-              <p class="text-[12px] text-aura-400 font-medium mt-0.5">${ex.target}</p>
+              <h3 class="text-[15px] font-semibold text-ink-950 leading-snug">${escapeHtml(ex.name)}</h3>
+              <p class="text-[12px] text-aura-400 font-medium mt-0.5">${escapeHtml(ex.target)}</p>
             </div>
             <div class="flex items-center gap-1.5 shrink-0">
               ${totalSets > ex.sets ? `<button onclick="removeSet('${currentDay}', ${exIdx})" class="pressable text-[12px] font-semibold text-mist-400 bg-black/[0.04] hairline w-8 h-8 rounded-full flex items-center justify-center">
@@ -984,7 +1297,8 @@
       if (dayHasWeights(dayKey) || dayHasDoneSets(dayKey)) return false;
       const last = getLastDaySession(dayKey);
       if (!last || !last.exercises) return false;
-      const dayData = DEFAULT_ROUTINE[dayKey];
+      const dayData = getDay(dayKey);
+      if (!dayData) return false;
       dayData.exercises.forEach((ex, exIdx) => {
         const lastSets = last.exercises[ex.name];
         if (!lastSets) return;
@@ -1007,14 +1321,18 @@
 
     function addExtraSet(dayKey, exIdx) {
       const key = `${dayKey}_ex${exIdx}_count`;
-      const currentCount = activeData[key] || DEFAULT_ROUTINE[dayKey].exercises[exIdx].sets;
+      const ex = getDay(dayKey) && getDay(dayKey).exercises[exIdx];
+      if (!ex) return;
+      const currentCount = activeData[key] || ex.sets;
       activeData[key] = currentCount + 1;
       saveActiveData();
       renderExercises();
     }
 
     function removeSet(dayKey, exIdx) {
-      const min = DEFAULT_ROUTINE[dayKey].exercises[exIdx].sets;
+      const ex = getDay(dayKey) && getDay(dayKey).exercises[exIdx];
+      if (!ex) return;
+      const min = ex.sets;
       const prefix = `${dayKey}_ex${exIdx}_`;
       const countKey = prefix + 'count';
       const total = activeData[countKey] || min;
@@ -1049,7 +1367,8 @@
       let completedCount = 0;
       let totalCount = 0;
 
-      const dayData = DEFAULT_ROUTINE[currentDay];
+      const dayData = getDay(currentDay);
+      if (!dayData) return;
       dayData.exercises.forEach((ex, exIdx) => {
         const setKeyPrefix = `${currentDay}_ex${exIdx}_`;
         const totalSets = (activeData[setKeyPrefix + 'count'] || ex.sets);
@@ -1083,7 +1402,8 @@
       let totalCount = 0;
       let sessionTonnage = 0;
       const sessionExercises = {};
-      const dayData = DEFAULT_ROUTINE[currentDay];
+      const dayData = getDay(currentDay);
+      if (!dayData) return { completedSets: 0, totalCount: 0, sessionTonnage: 0, sessionExercises, dayData: { name: '' } };
 
       dayData.exercises.forEach((ex, exIdx) => {
         const setsArray = [];
@@ -1199,7 +1519,7 @@
       document.getElementById('stat-best').innerText = best ? `${Math.round(best)}` : '0';
       document.getElementById('stat-week').innerText = weekCount;
       const sub = document.getElementById('header-sub');
-      if (sub) sub.innerText = historyData.length ? `${historyData.length} sesiones guardadas` : 'Recomposición · 4 días';
+      if (sub) sub.innerText = historyData.length ? `${historyData.length} sesiones guardadas` : 'Tu rutina';
     }
 
     function deleteSession(id) {
@@ -1256,20 +1576,35 @@
       lucide.createIcons();
     }
 
+    function shortLiftLabel(name) {
+      const s = String(name || '').split('/')[0].trim();
+      return s.length > 18 ? s.slice(0, 14) + '…' : s;
+    }
+
     function renderPrs() {
       const box = document.getElementById('pr-cards');
       if (!box) return;
-      box.innerHTML = LIFT_PRS.map((lift) => {
-        let best = 0;
-        historyData.forEach((h) => {
-          lift.names.forEach((n) => {
-            (h.exercises && h.exercises[n] || []).forEach((s) => {
-              if (s.weight > best) best = s.weight;
-            });
+      const bestByName = {};
+      historyData.forEach((h) => {
+        Object.keys(h.exercises || {}).forEach((n) => {
+          (h.exercises[n] || []).forEach((s) => {
+            const w = parseFloat(s.weight) || 0;
+            if (!bestByName[n] || w > bestByName[n]) bestByName[n] = w;
           });
         });
+      });
+      let names = Object.keys(bestByName).sort((a, b) => bestByName[b] - bestByName[a]).slice(0, 3);
+      if (!names.length && routine && routine.days && routine.days[0]) {
+        names = routine.days[0].exercises.slice(0, 3).map((ex) => ex.name);
+      }
+      if (!names.length) {
+        box.innerHTML = `<p class="text-[13px] text-mist-400 col-span-3 text-center py-2">Cuando entrenes, aquí salen tus mejores kilos.</p>`;
+        return;
+      }
+      box.innerHTML = names.map((name) => {
+        const best = bestByName[name] || 0;
         return `<div class="text-center">
-          <p class="text-[11px] text-mist-400">${lift.label}</p>
+          <p class="text-[11px] text-mist-400">${escapeHtml(shortLiftLabel(name))}</p>
           <p class="text-[16px] font-semibold text-ink-950 mono mt-0.5">${best ? best + ' kg' : '—'}</p>
         </div>`;
       }).join('');
@@ -1360,7 +1695,8 @@
         exportedAt: new Date().toISOString(),
         history: historyData,
         session: activeData,
-        bodyweight: bodyweightLog
+        bodyweight: bodyweightLog,
+        routine
       };
       const json = JSON.stringify(payload, null, 2);
       const lines = historyData.slice().reverse().slice(0, 20).map((h) =>
@@ -1396,6 +1732,10 @@
               if (Array.isArray(data.history)) historyData = data.history;
               if (data.session) activeData = data.session;
               if (Array.isArray(data.bodyweight)) bodyweightLog = data.bodyweight;
+              if (data.routine && Array.isArray(data.routine.days) && data.routine.days.length) {
+                saveRoutine(data.routine);
+                ensureCurrentDay();
+              }
               localStorage.setItem('aura_history', JSON.stringify(historyData));
               localStorage.setItem('aura_active_session', JSON.stringify(activeData));
               localStorage.setItem('aura_bodyweight', JSON.stringify(bodyweightLog));
@@ -1503,14 +1843,18 @@
       });
     }
 
-    const lastCompleted = historyData[historyData.length - 1];
-    if (lastCompleted && currentDay === lastCompleted.dayKey && !dayHasDoneSets(currentDay)) {
-      currentDay = suggestedDay();
-      localStorage.setItem('aura_current_day', currentDay);
+    if (!routine) {
+      startSetup(false);
+    } else {
+      const lastCompleted = historyData[historyData.length - 1];
+      if (lastCompleted && currentDay === lastCompleted.dayKey && !dayHasDoneSets(currentDay)) {
+        currentDay = suggestedDay();
+        localStorage.setItem('aura_current_day', currentDay);
+      }
+      autoFillIfEmpty(currentDay);
+      renderTabs();
+      renderExercises();
     }
-    autoFillIfEmpty(currentDay);
-    renderTabs();
-    renderExercises();
     updateTimerUI();
     renderStats();
     lucide.createIcons();
