@@ -575,12 +575,12 @@
         subtitle: "Lunes · Empuje",
         short: "Lun",
         exercises: [
-          { name: "Press de banca plano", target: "3 × 6-8", sets: 3, rest: 120 },
-          { name: "Remo con barra / polea", target: "3 × 8-10", sets: 3, rest: 120 },
-          { name: "Press inclinado mancuernas", target: "3 × 10-12", sets: 3, rest: 90 },
-          { name: "Jalón al pecho prono", target: "3 × 10-12", sets: 3, rest: 90 },
-          { name: "Elevaciones laterales", target: "4 × 12-15", sets: 4, rest: 60 },
-          { name: "Extensiones tríceps polea", target: "3 × 10-12", sets: 3, rest: 90 }
+          { name: "Press de banca plano", target: "3 × 6-8", sets: 3 },
+          { name: "Remo con barra / polea", target: "3 × 8-10", sets: 3 },
+          { name: "Press inclinado mancuernas", target: "3 × 10-12", sets: 3 },
+          { name: "Jalón al pecho prono", target: "3 × 10-12", sets: 3 },
+          { name: "Elevaciones laterales", target: "4 × 12-15", sets: 4 },
+          { name: "Extensiones tríceps polea", target: "3 × 10-12", sets: 3 }
         ]
       },
       piernaA: {
@@ -588,11 +588,11 @@
         subtitle: "Martes · Cuádriceps",
         short: "Mar",
         exercises: [
-          { name: "Sentadilla trasera", target: "3 × 6-8", sets: 3, rest: 120 },
-          { name: "Peso muerto rumano", target: "3 × 8-10", sets: 3, rest: 120 },
-          { name: "Extensiones de cuádriceps", target: "3 × 12-15", sets: 3, rest: 90 },
-          { name: "Curl femoral tumbado", target: "3 × 10-12", sets: 3, rest: 90 },
-          { name: "Gemelos de pie", target: "4 × 12-15", sets: 4, rest: 60 }
+          { name: "Sentadilla trasera", target: "3 × 6-8", sets: 3 },
+          { name: "Peso muerto rumano", target: "3 × 8-10", sets: 3 },
+          { name: "Extensiones de cuádriceps", target: "3 × 12-15", sets: 3 },
+          { name: "Curl femoral tumbado", target: "3 × 10-12", sets: 3 },
+          { name: "Gemelos de pie", target: "4 × 12-15", sets: 4 }
         ]
       },
       torsoB: {
@@ -600,12 +600,12 @@
         subtitle: "Jueves · Tracción",
         short: "Jue",
         exercises: [
-          { name: "Press militar barra/manc", target: "3 × 6-8", sets: 3, rest: 120 },
-          { name: "Dominadas / Jalón neutro", target: "3 × 8-10", sets: 3, rest: 120 },
-          { name: "Cruces en poleas / Contractor", target: "3 × 12-15", sets: 3, rest: 90 },
-          { name: "Remo unilateral manc/máq", target: "3 × 10-12", sets: 3, rest: 90 },
-          { name: "Face Pull / Pájaros", target: "3 × 12-15", sets: 3, rest: 60 },
-          { name: "Curl de bíceps barra Z", target: "3 × 10-12", sets: 3, rest: 90 }
+          { name: "Press militar barra/manc", target: "3 × 6-8", sets: 3 },
+          { name: "Dominadas / Jalón neutro", target: "3 × 8-10", sets: 3 },
+          { name: "Cruces en poleas / Contractor", target: "3 × 12-15", sets: 3 },
+          { name: "Remo unilateral manc/máq", target: "3 × 10-12", sets: 3 },
+          { name: "Face Pull / Pájaros", target: "3 × 12-15", sets: 3 },
+          { name: "Curl de bíceps barra Z", target: "3 × 10-12", sets: 3 }
         ]
       },
       piernaB: {
@@ -613,11 +613,11 @@
         subtitle: "Viernes · Cadena post.",
         short: "Vie",
         exercises: [
-          { name: "Peso muerto convencional", target: "3 × 5-7", sets: 3, rest: 120 },
-          { name: "Sentadilla búlgara", target: "3 × 8-10/p", sets: 3, rest: 90 },
-          { name: "Curl femoral sentado", target: "3 × 10-12", sets: 3, rest: 90 },
-          { name: "Prensa inclinada", target: "3 × 10-12", sets: 3, rest: 90 },
-          { name: "Gemelos sentado", target: "4 × 12-15", sets: 4, rest: 60 }
+          { name: "Peso muerto convencional", target: "3 × 5-7", sets: 3 },
+          { name: "Sentadilla búlgara", target: "3 × 8-10/p", sets: 3 },
+          { name: "Curl femoral sentado", target: "3 × 10-12", sets: 3 },
+          { name: "Prensa inclinada", target: "3 × 10-12", sets: 3 },
+          { name: "Gemelos sentado", target: "4 × 12-15", sets: 4 }
         ]
       }
     };
@@ -642,8 +642,8 @@
     let modalConfirmFn = null;
     let wakeLock = null;
 
-    let timerSeconds = 90;
-    let timerPreset = 90;
+    let timerSeconds = Number(localStorage.getItem('aura_timer_preset')) || 90;
+    let timerPreset = timerSeconds;
     let timerInterval = null;
     let timerRunning = false;
     let timerEndsAt = 0;
@@ -704,13 +704,6 @@
         const v = activeData[k];
         return v && (v.weight || v.reps);
       });
-    }
-
-    function restForSetKey(key) {
-      const m = key.match(/^(torsoA|piernaA|torsoB|piernaB)_ex(\d+)_/);
-      if (!m) return 90;
-      const ex = DEFAULT_ROUTINE[m[1]].exercises[Number(m[2])];
-      return (ex && ex.rest) || 90;
     }
 
     function goToSuggestedDay() {
@@ -886,6 +879,7 @@
     function setTimer(sec) {
       timerPreset = sec;
       timerSeconds = sec;
+      localStorage.setItem('aura_timer_preset', String(sec));
       updateTimerUI();
       startTimer();
     }
@@ -972,12 +966,10 @@
 
         const lastRecords = getLastSessionRecord(ex.name);
 
-        const restLabel = ex.rest >= 120 ? '2 min' : `${ex.rest}s`;
-
         let html = `
           <div class="mb-3">
             <h3 class="text-[16px] font-semibold text-ink-950 leading-snug">${ex.name}</h3>
-            <p class="text-[12px] text-mist-400 font-medium mt-0.5">${ex.target} · descanso ${restLabel}</p>
+            <p class="text-[12px] text-mist-400 font-medium mt-0.5">${ex.target}</p>
           </div>
         `;
 
@@ -1139,7 +1131,7 @@
       renderExercises();
 
       if (activeData[key].done) {
-        setTimer(restForSetKey(key));
+        setTimer(timerPreset);
       }
     }
 
