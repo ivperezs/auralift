@@ -285,7 +285,7 @@
     <div id="tab-workout">
       <div id="today-banner" class="hidden pressable mb-4 card rounded-2xl px-4 py-3 flex items-center justify-between gap-3" onclick="goToSuggestedDay()">
         <div>
-          <p class="text-[11px] uppercase tracking-[0.14em] text-aura-400 font-semibold">Hoy toca</p>
+          <p class="text-[11px] uppercase tracking-[0.14em] text-aura-400 font-semibold" id="today-banner-kicker">Hoy toca</p>
           <p class="text-[15px] font-semibold text-ink-950 mt-0.5" id="today-banner-name"></p>
         </div>
         <span class="text-[13px] font-semibold text-aura-400">Cambiar</span>
@@ -500,6 +500,7 @@
         name: "Torso A",
         subtitle: "Lunes · Empuje",
         short: "Lun",
+        weekday: 1,
         exercises: [
           { name: "Press de banca plano", target: "3 × 6-8", sets: 3 },
           { name: "Remo con barra / polea", target: "3 × 8-10", sets: 3 },
@@ -513,6 +514,7 @@
         name: "Pierna A",
         subtitle: "Martes · Cuádriceps",
         short: "Mar",
+        weekday: 2,
         exercises: [
           { name: "Sentadilla trasera", target: "3 × 6-8", sets: 3 },
           { name: "Peso muerto rumano", target: "3 × 8-10", sets: 3 },
@@ -525,6 +527,7 @@
         name: "Torso B",
         subtitle: "Jueves · Tracción",
         short: "Jue",
+        weekday: 4,
         exercises: [
           { name: "Press militar barra/manc", target: "3 × 6-8", sets: 3 },
           { name: "Dominadas / Jalón neutro", target: "3 × 8-10", sets: 3 },
@@ -538,6 +541,7 @@
         name: "Pierna B",
         subtitle: "Viernes · Cadena post.",
         short: "Vie",
+        weekday: 5,
         exercises: [
           { name: "Peso muerto convencional", target: "3 × 5-7", sets: 3 },
           { name: "Sentadilla búlgara", target: "3 × 8-10/p", sets: 3 },
@@ -555,6 +559,7 @@
           name: DEFAULT_ROUTINE[id].name,
           subtitle: DEFAULT_ROUTINE[id].subtitle || '',
           short: DEFAULT_ROUTINE[id].short,
+          weekday: DEFAULT_ROUTINE[id].weekday,
           exercises: DEFAULT_ROUTINE[id].exercises.map((ex) => ({ ...ex }))
         }))
       };
@@ -594,10 +599,91 @@
       return (routine && routine.days || []).map((d) => d.id);
     }
 
+    const WD_SHORT = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+    const WD_NAMES = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const WD_SPREAD = {
+      1: [1],
+      2: [1, 4],
+      3: [1, 3, 5],
+      4: [1, 2, 4, 5],
+      5: [1, 2, 3, 4, 5],
+      6: [1, 2, 3, 4, 5, 6],
+      7: [1, 2, 3, 4, 5, 6, 0]
+    };
+    const DEFAULT_WEEKDAYS = { torsoA: 1, piernaA: 2, torsoB: 4, piernaB: 5 };
+
+    function inferWeekday(day) {
+      if (!day) return null;
+      if (Number.isInteger(day.weekday) && day.weekday >= 0 && day.weekday <= 6) return day.weekday;
+      if (DEFAULT_WEEKDAYS[day.id] != null) return DEFAULT_WEEKDAYS[day.id];
+      const text = `${day.subtitle || ''} ${day.short || ''} ${day.name || ''}`
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+      const rules = [
+        [/domingo|\bdom\b|\bdo\b/, 0],
+        [/lunes|\blun\b|\blu\b/, 1],
+        [/martes|\bmar\b|\bma\b/, 2],
+        [/miercoles|\bmie\b|\bmi\b/, 3],
+        [/jueves|\bjue\b|\bju\b/, 4],
+        [/viernes|\bvie\b|\bvi\b/, 5],
+        [/sabado|\bsab\b|\bsa\b/, 6]
+      ];
+      for (let r = 0; r < rules.length; r++) {
+        if (rules[r][0].test(text)) return rules[r][1];
+      }
+      return null;
+    }
+
+    function dayWeekday(day) {
+      return inferWeekday(day);
+    }
+
+    function hydrateRoutineWeekdays() {
+      if (!routine || !routine.days) return;
+      let changed = false;
+      routine.days.forEach((d) => {
+        if (!Number.isInteger(d.weekday)) {
+          const w = inferWeekday(d);
+          if (w != null) {
+            d.weekday = w;
+            if (!d.short) d.short = WD_SHORT[w];
+            changed = true;
+          }
+        }
+      });
+      if (changed) saveRoutine(routine);
+    }
+
+    function completedOnDate(dayKey, ts) {
+      const key = localDateKey(ts);
+      if (!key) return false;
+      return historyData.some((h) => localDateKey(h.id) === key && h.dayKey === dayKey);
+    }
+
+    function nextTrainingDay(afterId) {
+      const ids = dayIds();
+      if (!ids.length) return currentDay;
+      const withWd = ids.map((id) => ({ id, wd: dayWeekday(getDay(id)) })).filter((x) => x.wd != null);
+      if (!withWd.length) {
+        const i = ids.indexOf(afterId);
+        return ids[(i < 0 ? 0 : i + 1) % ids.length];
+      }
+      const fromDay = getDay(afterId);
+      const start = afterId && dayWeekday(fromDay) != null ? dayWeekday(fromDay) : new Date().getDay();
+      for (let add = 1; add <= 7; add++) {
+        const wd = (start + add) % 7;
+        const hit = withWd.find((x) => x.wd === wd);
+        if (hit) return hit.id;
+      }
+      return withWd[0].id;
+    }
+
     const PLATES = [25, 20, 15, 10, 5, 2.5, 1.25];
     const BAR_KG = 20;
 
     let routine = loadRoutine();
+    hydrateRoutineWeekdays();
     let setupDraft = null;
     let setupStep = 1;
     let setupDayIndex = 0;
@@ -659,12 +745,14 @@
       }[c]));
     }
 
-    function emptySetupDay(i) {
+    function emptySetupDay(i, weekday) {
+      const wd = Number.isInteger(weekday) ? weekday : (WD_SPREAD[3][i] != null ? WD_SPREAD[3][i] : 1);
       return {
         id: 'dia_' + (i + 1),
         name: 'Día ' + (i + 1),
         subtitle: '',
-        short: 'D' + (i + 1),
+        short: WD_SHORT[wd],
+        weekday: wd,
         exercises: [{ name: '', target: '3 × 8-12', sets: 3 }]
       };
     }
@@ -712,8 +800,15 @@
 
     function setSetupDayCount(n) {
       n = Math.max(1, Math.min(7, parseInt(n, 10) || 3));
+      const spread = WD_SPREAD[n] || WD_SPREAD[3];
       const days = (setupDraft.days || []).slice(0, n);
-      while (days.length < n) days.push(emptySetupDay(days.length));
+      while (days.length < n) days.push(emptySetupDay(days.length, spread[days.length]));
+      days.forEach((d, i) => {
+        if (!Number.isInteger(d.weekday)) {
+          d.weekday = spread[i];
+          d.short = WD_SHORT[d.weekday];
+        }
+      });
       setupDraft.days = days;
       renderSetup();
     }
@@ -737,13 +832,19 @@
       renderSetup();
     }
 
+    function setupSetWeekday(i, wd) {
+      if (!setupDraft.days[i]) return;
+      setupDraft.days.forEach((d, j) => {
+        if (j !== i && d.weekday === wd) d.weekday = null;
+      });
+      setupDraft.days[i].weekday = wd;
+      setupDraft.days[i].short = WD_SHORT[wd];
+      renderSetup();
+    }
+
     function setupUpdateDay(i, field, value) {
       if (!setupDraft.days[i]) return;
       setupDraft.days[i][field] = value;
-      if (field === 'name') {
-        const name = String(value || '').trim();
-        setupDraft.days[i].short = name ? name.slice(0, 3).toUpperCase() : ('D' + (i + 1));
-      }
     }
 
     function setupUpdateEx(i, exIdx, field, value) {
@@ -787,7 +888,8 @@
           id: d.id,
           name,
           subtitle: String(d.subtitle || '').trim(),
-          short: String(d.short || name.slice(0, 3) || ('D' + (i + 1))).trim(),
+          short: Number.isInteger(d.weekday) ? WD_SHORT[d.weekday] : String(d.short || name.slice(0, 3) || ('D' + (i + 1))).trim(),
+          weekday: Number.isInteger(d.weekday) ? d.weekday : inferWeekday(d),
           exercises
         };
       })).filter((d) => d.exercises.length);
@@ -813,6 +915,10 @@
       }
       saveRoutine(next);
       ensureCurrentDay();
+      if (!dayHasDoneSets(currentDay)) {
+        currentDay = suggestedDay() || currentDay;
+        localStorage.setItem('aura_current_day', currentDay);
+      }
       document.getElementById('setup-overlay').classList.add('hidden');
       autoFillIfEmpty(currentDay);
       renderTabs();
@@ -850,14 +956,20 @@
       if (setupStep === 2) {
         kicker.innerText = `Paso 2 · ${n} ${n === 1 ? 'día' : 'días'}`;
         title.innerText = 'Nombra cada día';
-        lead.innerText = 'Por ejemplo Torso, Pierna, Push o el nombre que uses en el gym.';
+        lead.innerText = 'Elige también el día de la semana. Así “Hoy toca” coincide con el calendario.';
         body.innerHTML = setupDraft.days.map((d, i) => `
           <div class="card rounded-2xl p-4 ${i ? 'mt-3' : ''}">
-            <p class="text-[11px] uppercase tracking-[0.12em] text-mist-400 font-semibold mb-2">Día ${i + 1}</p>
+            <p class="text-[11px] uppercase tracking-[0.12em] text-mist-400 font-semibold mb-2">Entrenamiento ${i + 1}</p>
             <input type="text" value="${escapeHtml(d.name)}" placeholder="Nombre del día"
               oninput="setupUpdateDay(${i}, 'name', this.value)"
               class="w-full bg-white border border-black/10 px-3 py-3 rounded-2xl font-semibold text-ink-950">
-            <input type="text" value="${escapeHtml(d.subtitle || '')}" placeholder="Opcional: lunes, cadena posterior…"
+            <div class="flex gap-1 mt-3">
+              ${[1, 2, 3, 4, 5, 6, 0].map((wd) => {
+                const on = d.weekday === wd;
+                return `<button type="button" onclick="setupSetWeekday(${i}, ${wd})" class="pressable flex-1 py-2 rounded-xl text-[11px] font-semibold ${on ? 'bg-aura-400 text-white' : 'bg-black/[0.04] text-ink-950'}">${WD_SHORT[wd]}</button>`;
+              }).join('')}
+            </div>
+            <input type="text" value="${escapeHtml(d.subtitle || '')}" placeholder="Opcional: empuje, cuádriceps…"
               oninput="setupUpdateDay(${i}, 'subtitle', this.value)"
               class="mt-2 w-full bg-white border border-black/10 px-3 py-3 rounded-2xl text-[15px] text-ink-950">
           </div>
@@ -908,6 +1020,12 @@
     function suggestedDay() {
       const ids = dayIds();
       if (!ids.length) return currentDay;
+      const today = new Date().getDay();
+      const match = ids.map((id) => getDay(id)).find((d) => d && dayWeekday(d) === today);
+      if (match && !completedOnDate(match.id, Date.now())) return match.id;
+      if (match) return nextTrainingDay(match.id);
+      const withWd = ids.some((id) => dayWeekday(getDay(id)) != null);
+      if (withWd) return nextTrainingDay();
       if (!historyData.length) return ids[0];
       const lastKey = historyData[historyData.length - 1].dayKey;
       const i = ids.indexOf(lastKey);
@@ -1134,7 +1252,7 @@
         }`;
         btn.innerHTML = `
           <span class="text-[13px] leading-none">${escapeHtml(item.name)}</span>
-          <span class="text-[10px] mt-1 ${isActive ? 'opacity-70' : 'opacity-80'}">${escapeHtml(item.short || ('D' + (keys.indexOf(k) + 1)))}</span>
+          <span class="text-[10px] mt-1 ${isActive ? 'opacity-70' : 'opacity-80'}">${escapeHtml(item.short || (Number.isInteger(item.weekday) ? WD_SHORT[item.weekday] : ('D' + (keys.indexOf(k) + 1))))}</span>
         `;
         btn.onclick = () => selectDay(k);
         nav.appendChild(btn);
@@ -1153,9 +1271,15 @@
       const sug = suggestedDay();
       const banner = document.getElementById('today-banner');
       const bannerName = document.getElementById('today-banner-name');
+      const bannerKicker = document.getElementById('today-banner-kicker');
       const sugDay = getDay(sug);
       if (banner && bannerName && sugDay) {
+        const todayWd = new Date().getDay();
+        const sugWd = dayWeekday(sugDay);
         bannerName.innerText = sugDay.name;
+        if (bannerKicker) {
+          bannerKicker.innerText = sugWd === todayWd ? 'Hoy toca' : 'Siguiente';
+        }
         if (sug !== currentDay) banner.classList.remove('hidden');
         else banner.classList.add('hidden');
       } else if (banner) {
@@ -1480,7 +1604,7 @@
         }
       });
       saveActiveData();
-      currentDay = suggestedDay();
+      currentDay = nextTrainingDay(currentDay);
       localStorage.setItem('aura_current_day', currentDay);
       autoFillIfEmpty(currentDay);
       renderTabs();
@@ -1846,9 +1970,9 @@
     if (!routine) {
       startSetup(false);
     } else {
-      const lastCompleted = historyData[historyData.length - 1];
-      if (lastCompleted && currentDay === lastCompleted.dayKey && !dayHasDoneSets(currentDay)) {
-        currentDay = suggestedDay();
+      const sug = suggestedDay();
+      if (sug && sug !== currentDay && !dayHasDoneSets(currentDay)) {
+        currentDay = sug;
         localStorage.setItem('aura_current_day', currentDay);
       }
       autoFillIfEmpty(currentDay);
