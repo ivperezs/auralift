@@ -151,187 +151,13 @@
       border: 1px solid rgba(20, 32, 24, 0.1);
     }
 
-    .ex-sheet {
-      background: #fff;
-      border: 1px solid rgba(20, 32, 24, 0.07);
-      border-radius: 22px;
-      box-shadow: 0 10px 28px rgba(20, 32, 24, 0.05);
-      overflow: hidden;
+    .set-row {
+      min-height: 48px;
     }
 
-    .ex-head {
-      display: flex;
-      align-items: baseline;
-      gap: 12px;
-      padding: 15px 16px 13px;
-    }
-
-    .ex-name {
-      flex: 1;
-      min-width: 0;
-      margin: 0;
-      font-size: 16px;
-      font-weight: 650;
-      letter-spacing: -0.03em;
-      line-height: 1.25;
-      color: #142018;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .ex-rx {
-      flex-shrink: 0;
-      font-size: 13px;
-      font-weight: 750;
-      color: #0e9a86;
-      letter-spacing: -0.02em;
-      white-space: nowrap;
-    }
-
-    .lift-set {
-      border-top: 1px solid rgba(20, 32, 24, 0.05);
-    }
-    .lift-set.is-done {
-      background: linear-gradient(90deg, rgba(14, 154, 134, 0.1), rgba(14, 154, 134, 0.02) 72%);
-    }
-
-    .lift-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 12px 4px;
-    }
-
-    .lift-n {
-      width: 26px;
-      height: 26px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      font-size: 12px;
-      font-weight: 800;
-      color: #5c6f66;
-      background: #eef3ec;
-    }
-    .lift-set.is-done .lift-n {
-      background: #0e9a86;
-      color: #fff;
-    }
-
-    .plate {
-      display: flex;
-      align-items: center;
-      flex: 1.35;
-      min-width: 0;
-      height: 54px;
-      padding: 0 2px;
-      border-radius: 999px;
-      background:
-        radial-gradient(circle at 50% 50%, #f8fbf7 0 36%, transparent 37%),
-        linear-gradient(180deg, #e8f1ea, #dce8e0);
-      box-shadow:
-        inset 0 0 0 3px rgba(14, 154, 134, 0.22),
-        inset 0 1px 0 rgba(255, 255, 255, 0.7);
-    }
-    .lift-set.is-done .plate {
-      box-shadow:
-        inset 0 0 0 3px #0e9a86,
-        inset 0 1px 0 rgba(255, 255, 255, 0.55);
-    }
-    .plate-face {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    .plate input,
-    .rep-chip input {
-      width: 100%;
-      min-width: 0;
-      height: 22px;
-      padding: 0;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-      text-align: center;
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      color: #142018;
-      line-height: 1;
-    }
-    .plate-unit {
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: #8a9b93;
-    }
-
-    .rep-chip {
-      display: flex;
-      align-items: center;
-      flex: 0.9;
-      min-width: 0;
-      height: 54px;
-      padding: 0 2px;
-      border-radius: 16px;
-      background: #f3f7f2;
-    }
-    .lift-set.is-done .rep-chip {
-      background: rgba(14, 154, 134, 0.12);
-    }
-
-    .nudge {
-      width: 32px;
-      height: 44px;
-      flex-shrink: 0;
-      border: 0;
-      background: transparent;
-      font-size: 18px;
-      font-weight: 500;
-      color: #0e9a86;
-      line-height: 1;
-    }
-
-    .mark {
-      width: 44px;
-      height: 44px;
-      flex-shrink: 0;
-      border: 0;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #eef3ec;
-      color: #8a9b93;
-    }
-    .mark.is-on {
-      background: #0e9a86;
-      color: #fff;
-    }
-
-    .lift-meta {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 14px 10px 46px;
-    }
-
-    .add-set-btn {
-      width: 100%;
-      height: 46px;
-      border: 0;
-      border-top: 1px dashed rgba(20, 32, 24, 0.1);
-      background: transparent;
-      color: #0e9a86;
-      font-size: 13px;
-      font-weight: 650;
+    .check-btn {
+      min-width: 44px;
+      min-height: 44px;
     }
 
     .pressable {
@@ -394,75 +220,18 @@
       color: #fbbf24;
     }
 
-    .times {
-      flex-shrink: 0;
-      font-size: 13px;
+    .step-btn {
+      min-width: 44px;
+      min-height: 44px;
+      border-radius: 12px;
+      font-size: 15px;
       font-weight: 700;
-      color: #c4d4c9;
     }
-
-    .heat-ydays {
-      display: grid;
-      grid-template-rows: repeat(7, 11px);
-      gap: 3px;
-      margin-top: 16px;
-    }
-    .heat-ydays span {
-      display: flex;
-      align-items: center;
-      height: 11px;
-    }
-    .heat-months {
-      display: grid;
-      grid-auto-flow: column;
-      grid-auto-columns: 11px;
-      gap: 3px;
-      height: 14px;
-      margin-bottom: 2px;
-      font-size: 9px;
-      color: #5c6f66;
-    }
-    .heat-months span {
-      overflow: visible;
-      white-space: nowrap;
-    }
-    .heat-grid {
-      display: grid;
-      grid-auto-flow: column;
-      grid-template-rows: repeat(7, 11px);
-      grid-auto-columns: 11px;
-      gap: 3px;
-    }
-    .heat-cell {
-      width: 11px;
-      height: 11px;
-      border-radius: 2px;
-      background: #e7eee9;
-      padding: 0;
-      border: 0;
-    }
-    .heat-cell.l1 { background: #c8ebe3; }
-    .heat-cell.l2 { background: #7ecdc0; }
-    .heat-cell.l3 { background: #0e9a86; }
-    .heat-cell.l4 { background: #0a5c50; }
-    .heat-cell.is-today {
-      outline: 1px solid rgba(20, 32, 24, 0.35);
-      outline-offset: 0;
-    }
-    .heat-swatch {
-      width: 11px;
-      height: 11px;
-      border-radius: 2px;
-      display: inline-block;
-    }
-    .heat-swatch.l0 { background: #e7eee9; }
-    .heat-swatch.l1 { background: #c8ebe3; }
-    .heat-swatch.l2 { background: #7ecdc0; }
-    .heat-swatch.l3 { background: #0e9a86; }
-    .heat-swatch.l4 { background: #0a5c50; }
 
     textarea.note-input {
       font-size: 16px;
+      -webkit-appearance: none;
+      appearance: none;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -565,34 +334,6 @@
           <p class="text-[11px] text-mist-400">7 días</p>
           <p class="text-[18px] font-semibold text-ink-950 mono mt-0.5" id="stat-week">0</p>
         </div>
-      </div>
-
-      <div class="card rounded-2xl p-4">
-        <div class="flex items-start justify-between gap-3 mb-3">
-          <div>
-            <h3 class="text-[12px] font-semibold text-mist-400 uppercase tracking-[0.12em]">Actividad</h3>
-            <p class="text-[13px] text-ink-950 mt-1" id="heat-summary">Sin sesiones todavía</p>
-          </div>
-        </div>
-        <div class="flex gap-2">
-          <div class="heat-ydays text-[9px] text-mist-500 leading-none shrink-0 pt-[1px]">
-            <span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span>
-          </div>
-          <div class="overflow-x-auto min-w-0 flex-1">
-            <div id="heat-months" class="heat-months"></div>
-            <div id="heatmap" class="heat-grid"></div>
-          </div>
-        </div>
-        <div class="flex items-center justify-end gap-1 mt-3 text-[10px] text-mist-500">
-          <span>Menos</span>
-          <span class="heat-swatch l0"></span>
-          <span class="heat-swatch l1"></span>
-          <span class="heat-swatch l2"></span>
-          <span class="heat-swatch l3"></span>
-          <span class="heat-swatch l4"></span>
-          <span>Más</span>
-        </div>
-        <p id="heat-detail" class="text-[12px] text-mist-400 mt-2 min-h-[1.2em]"></p>
       </div>
 
       <div class="card rounded-2xl p-4">
@@ -707,12 +448,12 @@
         subtitle: "Lunes · Empuje",
         short: "Lun",
         exercises: [
-          { name: "Press de banca plano", target: "3 × 6-8", sets: 3 },
-          { name: "Remo con barra / polea", target: "3 × 8-10", sets: 3 },
-          { name: "Press inclinado mancuernas", target: "3 × 10-12", sets: 3 },
-          { name: "Jalón al pecho prono", target: "3 × 10-12", sets: 3 },
-          { name: "Elevaciones laterales", target: "4 × 12-15", sets: 4 },
-          { name: "Extensiones tríceps polea", target: "3 × 10-12", sets: 3 }
+          { name: "Press de banca plano", target: "3 × 6-8", sets: 3, rest: 120 },
+          { name: "Remo con barra / polea", target: "3 × 8-10", sets: 3, rest: 120 },
+          { name: "Press inclinado mancuernas", target: "3 × 10-12", sets: 3, rest: 90 },
+          { name: "Jalón al pecho prono", target: "3 × 10-12", sets: 3, rest: 90 },
+          { name: "Elevaciones laterales", target: "4 × 12-15", sets: 4, rest: 60 },
+          { name: "Extensiones tríceps polea", target: "3 × 10-12", sets: 3, rest: 90 }
         ]
       },
       piernaA: {
@@ -720,11 +461,11 @@
         subtitle: "Martes · Cuádriceps",
         short: "Mar",
         exercises: [
-          { name: "Sentadilla trasera", target: "3 × 6-8", sets: 3 },
-          { name: "Peso muerto rumano", target: "3 × 8-10", sets: 3 },
-          { name: "Extensiones de cuádriceps", target: "3 × 12-15", sets: 3 },
-          { name: "Curl femoral tumbado", target: "3 × 10-12", sets: 3 },
-          { name: "Gemelos de pie", target: "4 × 12-15", sets: 4 }
+          { name: "Sentadilla trasera", target: "3 × 6-8", sets: 3, rest: 120 },
+          { name: "Peso muerto rumano", target: "3 × 8-10", sets: 3, rest: 120 },
+          { name: "Extensiones de cuádriceps", target: "3 × 12-15", sets: 3, rest: 90 },
+          { name: "Curl femoral tumbado", target: "3 × 10-12", sets: 3, rest: 90 },
+          { name: "Gemelos de pie", target: "4 × 12-15", sets: 4, rest: 60 }
         ]
       },
       torsoB: {
@@ -732,12 +473,12 @@
         subtitle: "Jueves · Tracción",
         short: "Jue",
         exercises: [
-          { name: "Press militar barra/manc", target: "3 × 6-8", sets: 3 },
-          { name: "Dominadas / Jalón neutro", target: "3 × 8-10", sets: 3 },
-          { name: "Cruces en poleas / Contractor", target: "3 × 12-15", sets: 3 },
-          { name: "Remo unilateral manc/máq", target: "3 × 10-12", sets: 3 },
-          { name: "Face Pull / Pájaros", target: "3 × 12-15", sets: 3 },
-          { name: "Curl de bíceps barra Z", target: "3 × 10-12", sets: 3 }
+          { name: "Press militar barra/manc", target: "3 × 6-8", sets: 3, rest: 120 },
+          { name: "Dominadas / Jalón neutro", target: "3 × 8-10", sets: 3, rest: 120 },
+          { name: "Cruces en poleas / Contractor", target: "3 × 12-15", sets: 3, rest: 90 },
+          { name: "Remo unilateral manc/máq", target: "3 × 10-12", sets: 3, rest: 90 },
+          { name: "Face Pull / Pájaros", target: "3 × 12-15", sets: 3, rest: 60 },
+          { name: "Curl de bíceps barra Z", target: "3 × 10-12", sets: 3, rest: 90 }
         ]
       },
       piernaB: {
@@ -745,11 +486,11 @@
         subtitle: "Viernes · Cadena post.",
         short: "Vie",
         exercises: [
-          { name: "Peso muerto convencional", target: "3 × 5-7", sets: 3 },
-          { name: "Sentadilla búlgara", target: "3 × 8-10/p", sets: 3 },
-          { name: "Curl femoral sentado", target: "3 × 10-12", sets: 3 },
-          { name: "Prensa inclinada", target: "3 × 10-12", sets: 3 },
-          { name: "Gemelos sentado", target: "4 × 12-15", sets: 4 }
+          { name: "Peso muerto convencional", target: "3 × 5-7", sets: 3, rest: 120 },
+          { name: "Sentadilla búlgara", target: "3 × 8-10/p", sets: 3, rest: 90 },
+          { name: "Curl femoral sentado", target: "3 × 10-12", sets: 3, rest: 90 },
+          { name: "Prensa inclinada", target: "3 × 10-12", sets: 3, rest: 90 },
+          { name: "Gemelos sentado", target: "4 × 12-15", sets: 4, rest: 60 }
         ]
       }
     };
@@ -774,8 +515,8 @@
     let modalConfirmFn = null;
     let wakeLock = null;
 
-    let timerSeconds = Number(localStorage.getItem('aura_timer_preset')) || 90;
-    let timerPreset = timerSeconds;
+    let timerSeconds = 90;
+    let timerPreset = 90;
     let timerInterval = null;
     let timerRunning = false;
     let timerEndsAt = 0;
@@ -836,6 +577,13 @@
         const v = activeData[k];
         return v && (v.weight || v.reps);
       });
+    }
+
+    function restForSetKey(key) {
+      const m = key.match(/^(torsoA|piernaA|torsoB|piernaB)_ex(\d+)_/);
+      if (!m) return 90;
+      const ex = DEFAULT_ROUTINE[m[1]].exercises[Number(m[2])];
+      return (ex && ex.rest) || 90;
     }
 
     function goToSuggestedDay() {
@@ -1011,7 +759,6 @@
     function setTimer(sec) {
       timerPreset = sec;
       timerSeconds = sec;
-      localStorage.setItem('aura_timer_preset', String(sec));
       updateTimerUI();
       startTimer();
     }
@@ -1094,19 +841,34 @@
 
       dayData.exercises.forEach((ex, exIdx) => {
         const exCard = document.createElement('div');
-        exCard.className = "ex-sheet";
+        exCard.className = "card rounded-2xl p-4";
 
         const lastRecords = getLastSessionRecord(ex.name);
 
-        let html = `
-          <div class="ex-head">
-            <h3 class="ex-name">${ex.name}</h3>
-            <span class="ex-rx mono">${ex.target}</span>
-          </div>
-        `;
-
+        const note = exerciseNotes[ex.name] || '';
+        const restLabel = ex.rest >= 120 ? '2 min' : `${ex.rest}s`;
         const setKeyPrefix = `${currentDay}_ex${exIdx}_`;
         const totalSets = (activeData[setKeyPrefix + 'count'] || ex.sets);
+
+        let html = `
+          <div class="flex items-start justify-between mb-2 gap-3">
+            <div class="min-w-0">
+              <h3 class="text-[15px] font-semibold text-ink-950 leading-snug">${ex.name}</h3>
+              <p class="text-[12px] text-aura-400 font-medium mt-0.5">${ex.target} · descanso ${restLabel}</p>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+              ${totalSets > ex.sets ? `<button onclick="removeSet('${currentDay}', ${exIdx})" class="pressable text-[12px] font-semibold text-mist-400 bg-black/[0.04] hairline w-8 h-8 rounded-full flex items-center justify-center">
+                <i data-lucide="minus" class="w-3.5 h-3.5"></i>
+              </button>` : ''}
+              <button onclick="addExtraSet('${currentDay}', ${exIdx})" class="pressable text-[12px] font-semibold text-mist-400 bg-black/[0.04] hairline w-8 h-8 rounded-full flex items-center justify-center">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+          <input type="text" maxlength="80" placeholder="Nota: hombro, pump..." value="${escapeHtml(note)}"
+            oninput="saveNote(${exIdx}, this.value)"
+            class="note-input w-full mb-3 bg-white border border-black/10 px-3 py-2 rounded-xl text-ink-950 placeholder:text-mist-500/70">
+        `;
 
         for (let s = 1; s <= totalSets; s++) {
           const setKey = `${setKeyPrefix}s${s}`;
@@ -1117,49 +879,52 @@
           const lastW = lastSet ? parseFloat(lastSet.weight) : NaN;
           const isPr = current.done && !isNaN(curW) && !isNaN(lastW) && curW > lastW;
 
-          const isExtra = s > ex.sets;
           html += `
-            <div class="lift-set ${current.done ? 'is-done' : ''}">
-              <div class="lift-row">
-                <div class="lift-n">${s}</div>
-                <div class="plate">
-                  <button onclick="bump('${setKey}', 'weight', -2.5)" class="nudge pressable">−</button>
-                  <div class="plate-face">
-                    <input type="number" step="0.5" inputmode="decimal" placeholder="0" value="${current.weight}" autocomplete="off"
-                      data-key="${setKey}" data-field="weight"
-                      oninput="updateValue('${setKey}', 'weight', this.value)">
-                    <span class="plate-unit">kg</span>
-                  </div>
-                  <button onclick="bump('${setKey}', 'weight', 2.5)" class="nudge pressable">+</button>
+            <div class="mb-2 p-2.5 rounded-xl ${current.done ? 'bg-aura-400/[0.1]' : 'bg-black/[0.03]'}">
+              <div class="flex items-center justify-between mb-2">
+                <div>
+                  <span class="text-[13px] font-semibold ${isPr ? 'text-aura-500' : 'text-ink-950'}">Serie ${s}${isPr ? ' · PR' : ''}${s > ex.sets ? ' · extra' : ''}</span>
+                  <span class="text-[12px] text-mist-500 mono ml-2">ant. ${prev}</span>
                 </div>
-                <span class="times">×</span>
-                <div class="rep-chip">
-                  <button onclick="bump('${setKey}', 'reps', -1)" class="nudge pressable">−</button>
-                  <div class="plate-face">
-                    <input type="number" inputmode="numeric" placeholder="0" value="${current.reps}" autocomplete="off"
-                      data-key="${setKey}" data-field="reps"
-                      oninput="updateValue('${setKey}', 'reps', this.value)">
-                    <span class="plate-unit">reps</span>
-                  </div>
-                  <button onclick="bump('${setKey}', 'reps', 1)" class="nudge pressable">+</button>
-                </div>
-                <button onclick="toggleSet('${setKey}')" class="mark pressable ${current.done ? 'is-on' : ''}">
+                <div class="flex items-center gap-1.5">
+                  ${s > ex.sets && s === totalSets ? `<button onclick="removeSet('${currentDay}', ${exIdx})" class="pressable text-[12px] font-semibold text-mist-400 px-2 h-8 rounded-lg">Quitar</button>` : ''}
+                  <button onclick="toggleSet('${setKey}')"
+                  class="check-btn rounded-xl flex items-center justify-center pressable ${
+                    current.done
+                      ? 'bg-aura-400 text-white shadow-[0_4px_12px_rgba(14,154,134,0.28)]'
+                      : 'bg-white border border-black/10 text-mist-500'
+                  }">
                   <i data-lucide="check" class="w-4 h-4"></i>
                 </button>
+                </div>
               </div>
-              <div class="lift-meta">
-                <p class="text-[11px] text-mist-500">${isPr ? '<span class="text-aura-500 font-semibold">PR</span> · ' : ''}Anterior <span class="mono">${prev}</span>${isExtra ? ' · extra' : ''}</p>
-                ${isExtra ? `<button onclick="removeSet('${currentDay}', ${exIdx}, ${s})" class="pressable text-[11px] font-semibold text-mist-400">Quitar</button>` : '<span></span>'}
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <p class="text-[10px] uppercase tracking-[0.08em] text-mist-500 font-semibold mb-1">Kg</p>
+                  <div class="flex items-center gap-1">
+                    <button onclick="bump('${setKey}', 'weight', -2.5)" class="step-btn bg-white hairline">−</button>
+                    <input type="number" step="0.5" inputmode="decimal" placeholder="0" value="${current.weight}" autocomplete="off"
+                      data-key="${setKey}" data-field="weight"
+                      oninput="updateValue('${setKey}', 'weight', this.value)"
+                      class="min-w-0 flex-1 bg-white border border-black/10 text-center py-2 rounded-[10px] font-semibold text-ink-950">
+                    <button onclick="bump('${setKey}', 'weight', 2.5)" class="step-btn bg-white hairline">+</button>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-[10px] uppercase tracking-[0.08em] text-mist-500 font-semibold mb-1">Reps</p>
+                  <div class="flex items-center gap-1">
+                    <button onclick="bump('${setKey}', 'reps', -1)" class="step-btn bg-white hairline">−</button>
+                    <input type="number" inputmode="numeric" placeholder="0" value="${current.reps}" autocomplete="off"
+                      data-key="${setKey}" data-field="reps"
+                      oninput="updateValue('${setKey}', 'reps', this.value)"
+                      class="min-w-0 flex-1 bg-white border border-black/10 text-center py-2 rounded-[10px] font-semibold text-ink-950">
+                    <button onclick="bump('${setKey}', 'reps', 1)" class="step-btn bg-white hairline">+</button>
+                  </div>
+                </div>
               </div>
             </div>
           `;
         }
-
-        html += `
-          <button onclick="addExtraSet('${currentDay}', ${exIdx})" class="add-set-btn pressable flex items-center justify-center gap-1.5">
-            <i data-lucide="plus" class="w-4 h-4"></i> Añadir serie
-          </button>
-        `;
 
         exCard.innerHTML = html;
         container.appendChild(exCard);
@@ -1168,6 +933,12 @@
       lucide.createIcons();
       updateHeaderStats();
       requestAnimationFrame(() => window.scrollTo(0, y));
+    }
+
+    function saveNote(exIdx, val) {
+      const name = DEFAULT_ROUTINE[currentDay].exercises[exIdx].name;
+      exerciseNotes[name] = val;
+      localStorage.setItem('aura_exercise_notes', JSON.stringify(exerciseNotes));
     }
 
     function bump(key, field, delta) {
@@ -1217,17 +988,15 @@
       renderExercises();
     }
 
-    function removeSet(dayKey, exIdx, setNum) {
-      const planned = DEFAULT_ROUTINE[dayKey].exercises[exIdx].sets;
+    function removeSet(dayKey, exIdx) {
+      const min = DEFAULT_ROUTINE[dayKey].exercises[exIdx].sets;
       const prefix = `${dayKey}_ex${exIdx}_`;
-      const total = activeData[prefix + 'count'] || planned;
-      if (setNum <= planned || total <= planned) return;
-      for (let s = setNum; s < total; s++) {
-        const next = activeData[`${prefix}s${s + 1}`];
-        activeData[`${prefix}s${s}`] = next ? { ...next } : { weight: '', reps: '', done: false };
-      }
+      const countKey = prefix + 'count';
+      const total = activeData[countKey] || min;
+      if (total <= min) return;
       delete activeData[`${prefix}s${total}`];
-      activeData[prefix + 'count'] = total - 1;
+      if (total - 1 <= min) delete activeData[countKey];
+      else activeData[countKey] = total - 1;
       saveActiveData();
       renderExercises();
     }
@@ -1246,7 +1015,7 @@
       renderExercises();
 
       if (activeData[key].done) {
-        setTimer(timerPreset);
+        setTimer(restForSetKey(key));
       }
     }
 
@@ -1313,7 +1082,12 @@
         }
       });
 
-      return { completedSets, totalCount, sessionTonnage, sessionExercises, dayData };
+      const notes = {};
+      dayData.exercises.forEach((ex) => {
+        if (exerciseNotes[ex.name]) notes[ex.name] = exerciseNotes[ex.name];
+      });
+
+      return { completedSets, totalCount, sessionTonnage, sessionExercises, dayData, notes };
     }
 
     function finishWorkout() {
@@ -1338,7 +1112,7 @@
     }
 
     function saveFinishedSession(session) {
-      const { completedSets, sessionTonnage, sessionExercises, dayData } = session;
+      const { completedSets, sessionTonnage, sessionExercises, dayData, notes } = session;
       const logEntry = {
         id: Date.now(),
         date: new Date().toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }),
@@ -1346,7 +1120,8 @@
         name: dayData.name,
         tonnage: sessionTonnage,
         completedSets: completedSets,
-        exercises: sessionExercises
+        exercises: sessionExercises,
+        notes: notes || {}
       };
 
       historyData.push(logEntry);
@@ -1384,7 +1159,6 @@
         document.getElementById('timer-widget').classList.add('hidden');
         document.getElementById('tab-analytics').classList.remove('hidden');
         renderStats();
-        renderHeatmap();
         renderPrs();
         renderBodyweight();
         renderHistoryList();
@@ -1408,104 +1182,6 @@
       if (sub) sub.innerText = historyData.length ? `${historyData.length} sesiones guardadas` : 'Recomposición · 4 días';
     }
 
-    function isoDay(d) {
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    }
-
-    function mondayOf(d) {
-      const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-      const wd = x.getDay();
-      x.setDate(x.getDate() + (wd === 0 ? -6 : 1 - wd));
-      return x;
-    }
-
-    function heatLevel(tonnage, maxT) {
-      if (!tonnage) return 0;
-      if (!maxT) return 2;
-      const r = tonnage / maxT;
-      if (r < 0.25) return 1;
-      if (r < 0.5) return 2;
-      if (r < 0.8) return 3;
-      return 4;
-    }
-
-    function renderHeatmap() {
-      const grid = document.getElementById('heatmap');
-      const monthsEl = document.getElementById('heat-months');
-      const summary = document.getElementById('heat-summary');
-      if (!grid) return;
-
-      const byDay = {};
-      let yearCount = 0;
-      const yearStart = new Date(new Date().getFullYear(), 0, 1).getTime();
-      historyData.forEach((h) => {
-        const ts = h.id || 0;
-        if (!ts) return;
-        const key = isoDay(new Date(ts));
-        if (!byDay[key]) byDay[key] = { count: 0, tonnage: 0, items: [] };
-        byDay[key].count += 1;
-        byDay[key].tonnage += h.tonnage || 0;
-        byDay[key].items.push(h);
-        if (ts >= yearStart) yearCount += 1;
-      });
-      const maxT = Object.values(byDay).reduce((m, d) => Math.max(m, d.tonnage), 0);
-
-      const today = new Date();
-      const thisMonday = mondayOf(today);
-      const weeks = 20;
-      const origin = new Date(thisMonday);
-      origin.setDate(thisMonday.getDate() - (weeks - 1) * 7);
-
-      const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-      let lastMonth = -1;
-      const monthLabels = [];
-      grid.innerHTML = '';
-
-      for (let w = 0; w < weeks; w++) {
-        const weekMonday = new Date(origin);
-        weekMonday.setDate(origin.getDate() + w * 7);
-        const month = weekMonday.getMonth();
-        monthLabels.push(month !== lastMonth ? `<span>${monthNames[month]}</span>` : '<span></span>');
-        lastMonth = month;
-
-        for (let d = 0; d < 7; d++) {
-          const cellDate = new Date(origin);
-          cellDate.setDate(origin.getDate() + w * 7 + d);
-          const key = isoDay(cellDate);
-          const info = byDay[key];
-          const future = cellDate.setHours(0, 0, 0, 0) > new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
-          const lvl = (!future && info) ? heatLevel(info.tonnage, maxT) : 0;
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = `heat-cell l${lvl}${isoDay(today) === key ? ' is-today' : ''}`;
-          btn.title = cellDate.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' });
-          if (!future) {
-            btn.onclick = () => showHeatDay(key, info, cellDate);
-          }
-          grid.appendChild(btn);
-        }
-      }
-
-      monthsEl.innerHTML = monthLabels.join('');
-      if (summary) {
-        summary.innerText = yearCount
-          ? `${yearCount} sesión${yearCount === 1 ? '' : 'es'} este año`
-          : 'Sin sesiones este año';
-      }
-    }
-
-    function showHeatDay(key, info, date) {
-      const el = document.getElementById('heat-detail');
-      if (!el) return;
-      const label = date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'short' });
-      if (!info || !info.count) {
-        el.innerText = `${label}: sin entreno`;
-        return;
-      }
-      const names = info.items.map((h) => h.name).join(', ');
-      el.innerText = `${label}: ${info.count} sesión · ${Math.round(info.tonnage).toLocaleString()} kg · ${names}`;
-    }
-
     function deleteSession(id) {
       showModal('Borrar sesión', 'Esta sesión desaparecerá del historial. Tus marcas del día de hoy no se tocan.', {
         confirmText: 'Borrar',
@@ -1514,7 +1190,6 @@
           historyData = historyData.filter(h => h.id !== id);
           localStorage.setItem('aura_history', JSON.stringify(historyData));
           renderStats();
-          renderHeatmap();
           renderHistoryList();
           renderChart();
           renderTabs();
@@ -1527,7 +1202,8 @@
       if (!h) return;
       const lines = Object.keys(h.exercises || {}).map((name) => {
         const sets = h.exercises[name].map(s => `${s.weight}×${s.reps}`).join('  ');
-        return `${name}\n${sets}`;
+        const note = (h.notes && h.notes[name]) ? `\nNota: ${h.notes[name]}` : '';
+        return `${name}\n${sets}${note}`;
       });
       const bw = h.bodyweight ? `\nPeso corporal: ${h.bodyweight} kg` : '';
       showModal(h.name, `${h.date} · ${h.tonnage.toLocaleString()} kg${bw}\n\n${lines.join('\n\n') || 'Sin detalle'}`);
@@ -1709,7 +1385,6 @@
               renderTabs();
               renderExercises();
               renderStats();
-              renderHeatmap();
               renderPrs();
               renderBodyweight();
               renderHistoryList();
