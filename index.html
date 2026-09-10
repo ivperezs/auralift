@@ -331,8 +331,6 @@
 
     textarea.note-input {
       font-size: 16px;
-      -webkit-appearance: none;
-      appearance: none;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -974,7 +972,6 @@
 
         const lastRecords = getLastSessionRecord(ex.name);
 
-        const note = exerciseNotes[ex.name] || '';
         const restLabel = ex.rest >= 120 ? '2 min' : `${ex.rest}s`;
 
         let html = `
@@ -982,9 +979,6 @@
             <h3 class="text-[16px] font-semibold text-ink-950 leading-snug">${ex.name}</h3>
             <p class="text-[12px] text-mist-400 font-medium mt-0.5">${ex.target} · descanso ${restLabel}</p>
           </div>
-          <input type="text" maxlength="80" placeholder="Nota (opcional)" value="${escapeHtml(note)}"
-            oninput="saveNote(${exIdx}, this.value)"
-            class="note-input w-full mb-3 bg-[#f7f8f5] border border-black/10 px-3 py-2 rounded-xl text-ink-950 placeholder:text-mist-500/70">
         `;
 
         const setKeyPrefix = `${currentDay}_ex${exIdx}_`;
@@ -1067,12 +1061,6 @@
       lucide.createIcons();
       updateHeaderStats();
       requestAnimationFrame(() => window.scrollTo(0, y));
-    }
-
-    function saveNote(exIdx, val) {
-      const name = DEFAULT_ROUTINE[currentDay].exercises[exIdx].name;
-      exerciseNotes[name] = val;
-      localStorage.setItem('aura_exercise_notes', JSON.stringify(exerciseNotes));
     }
 
     function bump(key, field, delta) {
@@ -1218,12 +1206,7 @@
         }
       });
 
-      const notes = {};
-      dayData.exercises.forEach((ex) => {
-        if (exerciseNotes[ex.name]) notes[ex.name] = exerciseNotes[ex.name];
-      });
-
-      return { completedSets, totalCount, sessionTonnage, sessionExercises, dayData, notes };
+      return { completedSets, totalCount, sessionTonnage, sessionExercises, dayData };
     }
 
     function finishWorkout() {
@@ -1248,7 +1231,7 @@
     }
 
     function saveFinishedSession(session) {
-      const { completedSets, sessionTonnage, sessionExercises, dayData, notes } = session;
+      const { completedSets, sessionTonnage, sessionExercises, dayData } = session;
       const logEntry = {
         id: Date.now(),
         date: new Date().toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }),
@@ -1256,8 +1239,7 @@
         name: dayData.name,
         tonnage: sessionTonnage,
         completedSets: completedSets,
-        exercises: sessionExercises,
-        notes: notes || {}
+        exercises: sessionExercises
       };
 
       historyData.push(logEntry);
@@ -1438,8 +1420,7 @@
       if (!h) return;
       const lines = Object.keys(h.exercises || {}).map((name) => {
         const sets = h.exercises[name].map(s => `${s.weight}×${s.reps}`).join('  ');
-        const note = (h.notes && h.notes[name]) ? `\nNota: ${h.notes[name]}` : '';
-        return `${name}\n${sets}${note}`;
+        return `${name}\n${sets}`;
       });
       const bw = h.bodyweight ? `\nPeso corporal: ${h.bodyweight} kg` : '';
       showModal(h.name, `${h.date} · ${h.tonnage.toLocaleString()} kg${bw}\n\n${lines.join('\n\n') || 'Sin detalle'}`);
