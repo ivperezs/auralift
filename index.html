@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="AuraLift">
-  <meta name="theme-color" content="#07080b">
+  <meta name="theme-color" content="#f3f6f1">
   <meta name="format-detection" content="telephone=no">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -26,23 +26,23 @@
         extend: {
           colors: {
             ink: {
-              950: '#07080b',
-              900: '#0d0f14',
-              800: '#141c27',
-              700: '#1c2734',
-              600: '#263241'
+              950: '#142018',
+              900: '#1c2c22',
+              800: '#e7eee9',
+              700: '#d8e4dc',
+              600: '#c4d4c9'
             },
             mist: {
-              50: '#f4f7fb',
-              200: '#c5d0dc',
-              400: '#8a9bb0',
-              500: '#6b7f96'
+              50: '#f7faf6',
+              200: '#8a9b93',
+              400: '#5c6f66',
+              500: '#6b7d74'
             },
             aura: {
-              300: '#7dfff0',
-              400: '#3ee0c8',
-              500: '#20c4b0',
-              600: '#14a394'
+              300: '#5ee0cc',
+              400: '#0e9a86',
+              500: '#0b7f70',
+              600: '#0a6b5e'
             }
           },
           fontFamily: {
@@ -59,8 +59,8 @@
       --safe-bottom: env(safe-area-inset-bottom, 0px);
       --safe-left: env(safe-area-inset-left, 0px);
       --safe-right: env(safe-area-inset-right, 0px);
-      --accent: #3ee0c8;
-      --accent-dim: rgba(62, 224, 200, 0.14);
+      --accent: #0e9a86;
+      --accent-dim: rgba(14, 154, 134, 0.12);
     }
 
     html {
@@ -69,7 +69,8 @@
     }
 
     html, body {
-      background: #07080b;
+      background: #f3f6f1;
+      color: #142018;
       min-height: 100%;
       min-height: 100dvh;
       scrollbar-width: none;
@@ -129,25 +130,25 @@
 
     .app-bg {
       background:
-        radial-gradient(1200px 480px at 50% -12%, rgba(62, 224, 200, 0.16), transparent 55%),
-        radial-gradient(700px 320px at 100% 8%, rgba(88, 120, 255, 0.08), transparent 50%),
-        #07080b;
+        radial-gradient(1200px 480px at 50% -12%, rgba(14, 154, 134, 0.14), transparent 55%),
+        radial-gradient(700px 320px at 100% 8%, rgba(186, 210, 168, 0.28), transparent 50%),
+        #f3f6f1;
     }
 
     .glass {
-      background: rgba(10, 14, 20, 0.72);
+      background: rgba(255, 255, 255, 0.82);
       backdrop-filter: saturate(180%) blur(22px);
       -webkit-backdrop-filter: saturate(180%) blur(22px);
     }
 
     .card {
-      background: linear-gradient(180deg, rgba(24, 32, 44, 0.92), rgba(16, 22, 32, 0.96));
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+      background: #ffffff;
+      border: 1px solid rgba(20, 32, 24, 0.08);
+      box-shadow: 0 10px 28px rgba(20, 32, 24, 0.06);
     }
 
     .hairline {
-      border: 1px solid rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(20, 32, 24, 0.1);
     }
 
     .set-row {
@@ -179,8 +180,8 @@
       animation: timerDone 0.45s ease 3;
     }
     @keyframes timerDone {
-      0%, 100% { box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.45); }
-      50% { box-shadow: 0 0 0 3px rgba(62, 224, 200, 0.55); background: rgba(62, 224, 200, 0.16); }
+      0%, 100% { box-shadow: 0 -8px 30px rgba(20, 32, 24, 0.08); }
+      50% { box-shadow: 0 0 0 3px rgba(14, 154, 134, 0.35); background: rgba(14, 154, 134, 0.1); }
     }
 
     .header-pad {
@@ -189,20 +190,20 @@
 
     .progress-track {
       height: 4px;
-      background: rgba(255, 255, 255, 0.06);
+      background: rgba(20, 32, 24, 0.08);
       border-radius: 999px;
       overflow: hidden;
     }
     .progress-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, #20c4b0, #7dfff0);
+      background: linear-gradient(90deg, #0b7f70, #5ee0cc);
       border-radius: 999px;
       transition: width 0.35s ease;
     }
 
     .modal-scrim {
-      background: rgba(0, 0, 0, 0.55);
+      background: rgba(20, 32, 24, 0.28);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
     }
@@ -213,7 +214,7 @@
     }
 
     .timer-live #timer-display {
-      color: #3ee0c8;
+      color: #0e9a86;
     }
     .timer-urgent #timer-display {
       color: #fbbf24;
@@ -242,20 +243,20 @@
   </style>
 </head>
 
-<body class="app-bg text-mist-50 min-h-screen select-none antialiased pb-44">
+<body class="app-bg text-ink-950 min-h-screen select-none antialiased pb-44">
 
-  <header class="sticky top-0 z-30 glass border-b border-white/5 header-pad px-5 pb-3">
+  <header class="sticky top-0 z-30 glass border-b border-black/[0.06] header-pad px-5 pb-3">
     <div class="max-w-xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-aura-300 to-aura-600 flex items-center justify-center shadow-[0_8px_24px_rgba(32,196,176,0.28)]">
           <i data-lucide="dumbbell" class="w-5 h-5 text-ink-950"></i>
         </div>
         <div>
-          <h1 class="text-[17px] font-semibold tracking-tight text-white leading-none">AuraLift</h1>
+          <h1 class="text-[17px] font-semibold tracking-tight text-ink-950 leading-none">AuraLift</h1>
           <p class="text-[12px] text-mist-400 mt-1 font-medium" id="header-sub">Recomposición · 4 días</p>
         </div>
       </div>
-      <button onclick="switchTab('analytics')" class="pressable text-[13px] font-semibold bg-white/[0.06] text-mist-50 px-3.5 py-2 rounded-full hairline flex items-center gap-1.5">
+      <button onclick="switchTab('analytics')" class="pressable text-[13px] font-semibold bg-black/[0.05] text-ink-900 px-3.5 py-2 rounded-full hairline flex items-center gap-1.5">
         <i data-lucide="bar-chart-3" class="w-4 h-4 text-aura-400"></i>
         <span>Progreso</span>
       </button>
@@ -268,7 +269,7 @@
       <div id="today-banner" class="hidden pressable mb-4 card rounded-2xl px-4 py-3 flex items-center justify-between gap-3" onclick="goToSuggestedDay()">
         <div>
           <p class="text-[11px] uppercase tracking-[0.14em] text-aura-400 font-semibold">Hoy toca</p>
-          <p class="text-[15px] font-semibold text-white mt-0.5" id="today-banner-name">Torso A</p>
+          <p class="text-[15px] font-semibold text-ink-950 mt-0.5" id="today-banner-name">Torso A</p>
         </div>
         <span class="text-[13px] font-semibold text-aura-400">Cambiar</span>
       </div>
@@ -279,7 +280,7 @@
         <div class="flex items-center justify-between mb-2.5">
           <div>
             <p class="text-[11px] uppercase tracking-[0.14em] text-mist-400 font-semibold">Sesión de hoy</p>
-            <p class="text-[15px] font-semibold text-white mt-0.5" id="session-title">Torso A</p>
+            <p class="text-[15px] font-semibold text-ink-950 mt-0.5" id="session-title">Torso A</p>
           </div>
           <div class="text-right">
             <p class="text-[11px] text-mist-400">Volumen</p>
@@ -292,7 +293,7 @@
         <div class="flex items-center justify-between text-[12px] text-mist-400">
           <span class="flex items-center gap-1.5">
             <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-aura-400"></i>
-            Series <span class="text-white font-semibold mono ml-1" id="live-completed-sets">0/0</span>
+            Series <span class="text-ink-950 font-semibold mono ml-1" id="live-completed-sets">0/0</span>
           </span>
           <span id="session-subtitle">Lunes · Empuje</span>
         </div>
@@ -302,7 +303,7 @@
       <div id="exercises-container" class="space-y-3"></div>
 
       <div class="mt-5 mb-2">
-        <button onclick="finishWorkout()" class="pressable w-full bg-gradient-to-r from-aura-500 to-aura-300 text-ink-950 font-semibold py-3.5 rounded-2xl shadow-[0_10px_28px_rgba(32,196,176,0.22)] flex items-center justify-center gap-2 text-[16px]">
+        <button onclick="finishWorkout()" class="pressable w-full bg-gradient-to-r from-aura-500 to-aura-400 text-white font-semibold py-3.5 rounded-2xl shadow-[0_10px_28px_rgba(14,154,134,0.22)] flex items-center justify-center gap-2 text-[16px]">
           <i data-lucide="flag" class="w-5 h-5"></i>
           <span>Completar entrenamiento</span>
         </button>
@@ -313,7 +314,7 @@
       <div class="flex items-center justify-between">
         <div>
           <p class="text-[11px] uppercase tracking-[0.14em] text-mist-400 font-semibold">Analítica</p>
-          <h2 class="text-[20px] font-semibold text-white mt-0.5">Historial y progreso</h2>
+          <h2 class="text-[20px] font-semibold text-ink-950 mt-0.5">Historial y progreso</h2>
         </div>
         <button onclick="switchTab('workout')" class="pressable text-[13px] font-semibold text-aura-400 flex items-center gap-1 px-3 py-2 rounded-full bg-aura-400/10">
           <i data-lucide="chevron-left" class="w-4 h-4"></i> Entrenar
@@ -323,15 +324,15 @@
       <div class="grid grid-cols-3 gap-2">
         <div class="card rounded-2xl p-3 text-center">
           <p class="text-[11px] text-mist-400">Sesiones</p>
-          <p class="text-[18px] font-semibold text-white mono mt-0.5" id="stat-sessions">0</p>
+          <p class="text-[18px] font-semibold text-ink-950 mono mt-0.5" id="stat-sessions">0</p>
         </div>
         <div class="card rounded-2xl p-3 text-center">
           <p class="text-[11px] text-mist-400">Mejor</p>
-          <p class="text-[18px] font-semibold text-white mono mt-0.5" id="stat-best">0</p>
+          <p class="text-[18px] font-semibold text-ink-950 mono mt-0.5" id="stat-best">0</p>
         </div>
         <div class="card rounded-2xl p-3 text-center">
           <p class="text-[11px] text-mist-400">7 días</p>
-          <p class="text-[18px] font-semibold text-white mono mt-0.5" id="stat-week">0</p>
+          <p class="text-[18px] font-semibold text-ink-950 mono mt-0.5" id="stat-week">0</p>
         </div>
       </div>
 
@@ -342,7 +343,7 @@
 
       <div class="card rounded-2xl p-4">
         <h3 class="text-[12px] font-semibold text-mist-400 uppercase tracking-[0.12em] mb-2">Peso corporal</h3>
-        <p class="text-[22px] font-semibold text-white mono" id="bw-latest">—</p>
+        <p class="text-[22px] font-semibold text-ink-950 mono" id="bw-latest">—</p>
         <p class="text-[12px] text-mist-400 mt-1" id="bw-hint">Se pide al terminar el entreno</p>
       </div>
 
@@ -350,8 +351,8 @@
         <h3 class="text-[12px] font-semibold text-mist-400 uppercase tracking-[0.12em] mb-3">Copia de seguridad</h3>
         <p class="text-[13px] text-mist-400 mb-3">Mándatelo por WhatsApp o Mail. Si borras Safari, esto te salva el historial.</p>
         <div class="grid grid-cols-2 gap-2">
-          <button onclick="exportBackup()" class="pressable h-11 rounded-xl bg-aura-400 text-ink-950 font-semibold text-[13px]">Exportar</button>
-          <button onclick="document.getElementById('import-file').click()" class="pressable h-11 rounded-xl bg-white/[0.05] hairline font-semibold text-[13px]">Importar</button>
+          <button onclick="exportBackup()" class="pressable h-11 rounded-xl bg-aura-400 text-white font-semibold text-[13px]">Exportar</button>
+          <button onclick="document.getElementById('import-file').click()" class="pressable h-11 rounded-xl bg-black/[0.05] hairline font-semibold text-[13px]">Importar</button>
         </div>
         <input id="import-file" type="file" accept="application/json" class="hidden" onchange="importBackup(event)">
       </div>
@@ -365,7 +366,7 @@
 
       <div class="card rounded-2xl p-4">
         <h3 class="text-[12px] font-semibold text-mist-400 uppercase tracking-[0.12em] mb-1">Últimas sesiones</h3>
-        <div id="history-list" class="divide-y divide-white/5">
+        <div id="history-list" class="divide-y divide-black/10">
         </div>
       </div>
     </div>
@@ -373,7 +374,7 @@
   </main>
 
   <div id="timer-widget" class="fixed bottom-0 left-0 right-0 max-w-xl mx-auto z-40 px-4 timer-dock">
-    <div class="timer-panel glass hairline rounded-[22px] px-3 py-3 shadow-[0_-8px_40px_rgba(0,0,0,0.45)]">
+    <div class="timer-panel glass hairline rounded-[22px] px-3 py-3 shadow-[0_-8px_30px_rgba(20,32,24,0.08)]">
       <div class="flex items-center justify-between gap-3">
         <div class="flex items-center gap-3 min-w-0">
           <div class="w-11 h-11 rounded-2xl bg-aura-400/12 border border-aura-400/20 flex items-center justify-center text-aura-400 shrink-0">
@@ -381,22 +382,22 @@
           </div>
           <div>
             <p class="text-[11px] text-mist-400 font-semibold tracking-[0.12em] uppercase">Descanso</p>
-            <span id="timer-display" class="text-[22px] font-semibold text-white mono tracking-tight">01:30</span>
+            <span id="timer-display" class="text-[22px] font-semibold text-ink-950 mono tracking-tight">01:30</span>
           </div>
         </div>
         <div class="flex items-center gap-2 shrink-0">
-          <button onclick="openPlates()" class="pressable w-11 h-11 rounded-2xl bg-white/[0.06] hairline flex items-center justify-center">
+          <button onclick="openPlates()" class="pressable w-11 h-11 rounded-2xl bg-black/[0.05] hairline flex items-center justify-center">
             <i data-lucide="layers" class="w-4 h-4"></i>
           </button>
-          <button onclick="toggleTimer()" id="timer-toggle-btn" class="pressable w-11 h-11 rounded-2xl bg-aura-400 text-ink-950 flex items-center justify-center shadow-[0_6px_16px_rgba(32,196,176,0.28)]">
+          <button onclick="toggleTimer()" id="timer-toggle-btn" class="pressable w-11 h-11 rounded-2xl bg-aura-400 text-white flex items-center justify-center shadow-[0_6px_16px_rgba(14,154,134,0.28)]">
             <i data-lucide="play" class="w-4 h-4 fill-current"></i>
           </button>
         </div>
       </div>
       <div class="grid grid-cols-3 gap-2 mt-2.5">
-        <button onclick="setTimer(60)" id="preset-60" class="pressable h-10 text-[13px] font-semibold rounded-xl hairline bg-white/[0.06]">60s</button>
-        <button onclick="setTimer(90)" id="preset-90" class="pressable h-10 text-[13px] font-semibold rounded-xl hairline bg-white/[0.06]">90s</button>
-        <button onclick="setTimer(120)" id="preset-120" class="pressable h-10 text-[13px] font-semibold rounded-xl hairline bg-white/[0.06]">2m</button>
+        <button onclick="setTimer(60)" id="preset-60" class="pressable h-10 text-[13px] font-semibold rounded-xl hairline bg-black/[0.05]">60s</button>
+        <button onclick="setTimer(90)" id="preset-90" class="pressable h-10 text-[13px] font-semibold rounded-xl hairline bg-black/[0.05]">90s</button>
+        <button onclick="setTimer(120)" id="preset-120" class="pressable h-10 text-[13px] font-semibold rounded-xl hairline bg-black/[0.05]">2m</button>
       </div>
     </div>
   </div>
@@ -404,25 +405,25 @@
   <div id="plates-modal" class="fixed inset-0 z-50 hidden">
     <div class="modal-scrim absolute inset-0" onclick="closePlates()"></div>
     <div class="absolute left-4 right-4 bottom-[max(24px,calc(var(--safe-bottom)+16px))] max-w-xl mx-auto card rounded-[24px] p-5">
-      <div class="w-10 h-1 rounded-full bg-white/15 mx-auto mb-4"></div>
-      <h3 class="text-[18px] font-semibold text-white text-center">Calculadora de discos</h3>
+      <div class="w-10 h-1 rounded-full bg-black/10 mx-auto mb-4"></div>
+      <h3 class="text-[18px] font-semibold text-ink-950 text-center">Calculadora de discos</h3>
       <p class="text-[13px] text-mist-400 text-center mt-1">Barra olímpica 20 kg · por lado</p>
       <input id="plate-kg" type="number" step="0.5" inputmode="decimal" placeholder="Peso total" oninput="renderPlates()"
-        class="mt-4 w-full bg-ink-900 border border-white/10 text-center py-3 rounded-2xl font-semibold text-white">
-      <div id="plate-result" class="mt-4 text-center text-[15px] text-mist-200 leading-relaxed"></div>
-      <button onclick="closePlates()" class="pressable mt-5 w-full bg-aura-400 text-ink-950 font-semibold py-3.5 rounded-2xl text-[16px]">Cerrar</button>
+        class="mt-4 w-full bg-white border border-black/10 text-center py-3 rounded-2xl font-semibold text-ink-950">
+      <div id="plate-result" class="mt-4 text-center text-[15px] text-mist-400 leading-relaxed"></div>
+      <button onclick="closePlates()" class="pressable mt-5 w-full bg-aura-400 text-white font-semibold py-3.5 rounded-2xl text-[16px]">Cerrar</button>
     </div>
   </div>
 
   <div id="bw-modal" class="fixed inset-0 z-50 hidden">
     <div class="modal-scrim absolute inset-0" onclick="skipBodyweight()"></div>
     <div class="absolute left-4 right-4 bottom-[max(24px,calc(var(--safe-bottom)+16px))] max-w-xl mx-auto card rounded-[24px] p-5">
-      <div class="w-10 h-1 rounded-full bg-white/15 mx-auto mb-4"></div>
-      <h3 class="text-[18px] font-semibold text-white text-center">¿Peso corporal?</h3>
+      <div class="w-10 h-1 rounded-full bg-black/10 mx-auto mb-4"></div>
+      <h3 class="text-[18px] font-semibold text-ink-950 text-center">¿Peso corporal?</h3>
       <p class="text-[15px] text-mist-400 text-center mt-2">Opcional. Sirve para seguir la recomposición.</p>
       <input id="bw-input" type="number" step="0.1" inputmode="decimal" placeholder="kg"
-        class="mt-4 w-full bg-ink-900 border border-white/10 text-center py-3 rounded-2xl font-semibold text-white">
-      <button onclick="saveBodyweight()" class="pressable mt-5 w-full bg-aura-400 text-ink-950 font-semibold py-3.5 rounded-2xl text-[16px]">Guardar</button>
+        class="mt-4 w-full bg-white border border-black/10 text-center py-3 rounded-2xl font-semibold text-ink-950">
+      <button onclick="saveBodyweight()" class="pressable mt-5 w-full bg-aura-400 text-white font-semibold py-3.5 rounded-2xl text-[16px]">Guardar</button>
       <button onclick="skipBodyweight()" class="pressable w-full py-3 text-[15px] font-semibold text-mist-400">Ahora no</button>
     </div>
   </div>
@@ -430,11 +431,11 @@
   <div id="app-modal" class="fixed inset-0 z-50 hidden">
     <div class="modal-scrim absolute inset-0" onclick="closeModal()"></div>
     <div class="absolute left-4 right-4 bottom-[max(24px,calc(var(--safe-bottom)+16px))] max-w-xl mx-auto card rounded-[24px] p-5">
-      <div class="w-10 h-1 rounded-full bg-white/15 mx-auto mb-4"></div>
-      <h3 id="modal-title" class="text-[18px] font-semibold text-white text-center">Listo</h3>
+      <div class="w-10 h-1 rounded-full bg-black/10 mx-auto mb-4"></div>
+      <h3 id="modal-title" class="text-[18px] font-semibold text-ink-950 text-center">Listo</h3>
       <p id="modal-body" class="text-[15px] text-mist-400 text-center mt-2 leading-relaxed whitespace-pre-line"></p>
       <div class="mt-5 space-y-2">
-        <button id="modal-confirm" onclick="confirmModal()" class="pressable w-full bg-aura-400 text-ink-950 font-semibold py-3.5 rounded-2xl text-[16px]">Entendido</button>
+        <button id="modal-confirm" onclick="confirmModal()" class="pressable w-full bg-aura-400 text-white font-semibold py-3.5 rounded-2xl text-[16px]">Entendido</button>
         <button id="modal-cancel" onclick="closeModal()" class="pressable hidden w-full py-3 text-[15px] font-semibold text-mist-400">Cancelar</button>
       </div>
     </div>
@@ -677,7 +678,7 @@
         if (!btn) return;
         const on = timerPreset === sec;
         btn.className = `pressable h-10 w-full text-[13px] font-semibold rounded-xl hairline ${
-          on ? 'bg-aura-400 text-ink-950' : 'bg-white/[0.06]'
+          on ? 'bg-aura-400 text-white' : 'bg-black/[0.05]'
         }`;
       });
     }
@@ -782,9 +783,9 @@
         const isSuggested = k === suggestedDay();
         btn.className = `day-seg rounded-[14px] text-center transition flex flex-col items-center justify-center pressable ${
           isActive
-            ? 'bg-aura-400 text-ink-950 font-semibold shadow-[0_6px_16px_rgba(32,196,176,0.22)]'
+            ? 'bg-aura-400 text-white font-semibold shadow-[0_6px_16px_rgba(14,154,134,0.22)]'
             : isSuggested
-              ? 'text-aura-300 bg-aura-400/10'
+              ? 'text-aura-500 bg-aura-400/10'
               : 'text-mist-400'
         }`;
         btn.innerHTML = `
@@ -850,16 +851,16 @@
         let html = `
           <div class="flex items-start justify-between mb-2 gap-3">
             <div class="min-w-0">
-              <h3 class="text-[15px] font-semibold text-white leading-snug">${ex.name}</h3>
+              <h3 class="text-[15px] font-semibold text-ink-950 leading-snug">${ex.name}</h3>
               <p class="text-[12px] text-aura-400 font-medium mt-0.5">${ex.target} · descanso ${restLabel}</p>
             </div>
-            <button onclick="addExtraSet('${currentDay}', ${exIdx})" class="pressable shrink-0 text-[12px] font-semibold text-mist-200 bg-white/[0.05] hairline w-8 h-8 rounded-full flex items-center justify-center">
+            <button onclick="addExtraSet('${currentDay}', ${exIdx})" class="pressable shrink-0 text-[12px] font-semibold text-mist-400 bg-black/[0.04] hairline w-8 h-8 rounded-full flex items-center justify-center">
               <i data-lucide="plus" class="w-3.5 h-3.5"></i>
             </button>
           </div>
           <input type="text" maxlength="80" placeholder="Nota: hombro, pump..." value="${escapeHtml(note)}"
             oninput="saveNote(${exIdx}, this.value)"
-            class="note-input w-full mb-3 bg-ink-900 border border-white/10 px-3 py-2 rounded-xl text-white placeholder:text-mist-500/50">
+            class="note-input w-full mb-3 bg-white border border-black/10 px-3 py-2 rounded-xl text-ink-950 placeholder:text-mist-500/70">
         `;
 
         const setKeyPrefix = `${currentDay}_ex${exIdx}_`;
@@ -875,17 +876,17 @@
           const isPr = current.done && !isNaN(curW) && !isNaN(lastW) && curW > lastW;
 
           html += `
-            <div class="mb-2 p-2.5 rounded-xl ${current.done ? 'bg-aura-400/[0.08]' : 'bg-black/20'}">
+            <div class="mb-2 p-2.5 rounded-xl ${current.done ? 'bg-aura-400/[0.1]' : 'bg-black/[0.03]'}">
               <div class="flex items-center justify-between mb-2">
                 <div>
-                  <span class="text-[13px] font-semibold ${isPr ? 'text-aura-400' : 'text-white'}">Serie ${s}${isPr ? ' · PR' : ''}</span>
+                  <span class="text-[13px] font-semibold ${isPr ? 'text-aura-500' : 'text-ink-950'}">Serie ${s}${isPr ? ' · PR' : ''}</span>
                   <span class="text-[12px] text-mist-500 mono ml-2">ant. ${prev}</span>
                 </div>
                 <button onclick="toggleSet('${setKey}')"
                   class="check-btn rounded-xl flex items-center justify-center pressable ${
                     current.done
-                      ? 'bg-aura-400 text-ink-950 shadow-[0_4px_12px_rgba(32,196,176,0.28)]'
-                      : 'bg-ink-900 border border-white/10 text-mist-500'
+                      ? 'bg-aura-400 text-white shadow-[0_4px_12px_rgba(14,154,134,0.28)]'
+                      : 'bg-white border border-black/10 text-mist-500'
                   }">
                   <i data-lucide="check" class="w-4 h-4"></i>
                 </button>
@@ -894,23 +895,23 @@
                 <div>
                   <p class="text-[10px] uppercase tracking-[0.08em] text-mist-500 font-semibold mb-1">Kg</p>
                   <div class="flex items-center gap-1">
-                    <button onclick="bump('${setKey}', 'weight', -2.5)" class="step-btn bg-ink-900 hairline">−</button>
+                    <button onclick="bump('${setKey}', 'weight', -2.5)" class="step-btn bg-white hairline">−</button>
                     <input type="number" step="0.5" inputmode="decimal" placeholder="0" value="${current.weight}" autocomplete="off"
                       data-key="${setKey}" data-field="weight"
                       oninput="updateValue('${setKey}', 'weight', this.value)"
-                      class="min-w-0 flex-1 bg-ink-900 border border-white/10 text-center py-2 rounded-[10px] font-semibold text-white">
-                    <button onclick="bump('${setKey}', 'weight', 2.5)" class="step-btn bg-ink-900 hairline">+</button>
+                      class="min-w-0 flex-1 bg-white border border-black/10 text-center py-2 rounded-[10px] font-semibold text-ink-950">
+                    <button onclick="bump('${setKey}', 'weight', 2.5)" class="step-btn bg-white hairline">+</button>
                   </div>
                 </div>
                 <div>
                   <p class="text-[10px] uppercase tracking-[0.08em] text-mist-500 font-semibold mb-1">Reps</p>
                   <div class="flex items-center gap-1">
-                    <button onclick="bump('${setKey}', 'reps', -1)" class="step-btn bg-ink-900 hairline">−</button>
+                    <button onclick="bump('${setKey}', 'reps', -1)" class="step-btn bg-white hairline">−</button>
                     <input type="number" inputmode="numeric" placeholder="0" value="${current.reps}" autocomplete="off"
                       data-key="${setKey}" data-field="reps"
                       oninput="updateValue('${setKey}', 'reps', this.value)"
-                      class="min-w-0 flex-1 bg-ink-900 border border-white/10 text-center py-2 rounded-[10px] font-semibold text-white">
-                    <button onclick="bump('${setKey}', 'reps', 1)" class="step-btn bg-ink-900 hairline">+</button>
+                      class="min-w-0 flex-1 bg-white border border-black/10 text-center py-2 rounded-[10px] font-semibold text-ink-950">
+                    <button onclick="bump('${setKey}', 'reps', 1)" class="step-btn bg-white hairline">+</button>
                   </div>
                 </div>
               </div>
@@ -1202,11 +1203,11 @@
         row.className = "py-3.5 flex justify-between items-center gap-3";
         row.innerHTML = `
           <button onclick="showSessionDetail(${h.id})" class="text-left min-w-0 flex-1">
-            <p class="font-semibold text-white text-[15px]">${h.name}</p>
+            <p class="font-semibold text-ink-950 text-[15px]">${h.name}</p>
             <p class="text-[12px] text-mist-400 mt-0.5">${h.date} · ${h.completedSets} series</p>
           </button>
           <span class="font-semibold text-aura-400 mono text-[14px] shrink-0">${h.tonnage.toLocaleString()} kg</span>
-          <button onclick="deleteSession(${h.id})" class="pressable w-9 h-9 rounded-xl bg-white/[0.04] hairline flex items-center justify-center text-mist-400">
+          <button onclick="deleteSession(${h.id})" class="pressable w-9 h-9 rounded-xl bg-black/[0.04] hairline flex items-center justify-center text-mist-400">
             <i data-lucide="trash-2" class="w-4 h-4"></i>
           </button>
         `;
@@ -1229,7 +1230,7 @@
         });
         return `<div class="text-center">
           <p class="text-[11px] text-mist-400">${lift.label}</p>
-          <p class="text-[16px] font-semibold text-white mono mt-0.5">${best ? best + ' kg' : '—'}</p>
+          <p class="text-[16px] font-semibold text-ink-950 mono mt-0.5">${best ? best + ' kg' : '—'}</p>
         </div>`;
       }).join('');
     }
@@ -1310,7 +1311,7 @@
         out.innerText = `No cuadra con discos de gym. Sobra ${remain} kg por lado.`;
         return;
       }
-      out.innerHTML = `<p class="text-white font-semibold mb-1">${total} kg</p>
+        out.innerHTML = `<p class="text-ink-950 font-semibold mb-1">${total} kg</p>
         <p>Barra ${BAR_KG} + cada lado: ${used.length ? used.join(' + ') : 'solo barra'}</p>`;
     }
 
@@ -1387,8 +1388,8 @@
       const data = lastSessions.map(s => s.tonnage);
 
       const gradient = ctx.createLinearGradient(0, 0, 0, 180);
-      gradient.addColorStop(0, 'rgba(62, 224, 200, 0.28)');
-      gradient.addColorStop(1, 'rgba(62, 224, 200, 0)');
+      gradient.addColorStop(0, 'rgba(14, 154, 134, 0.22)');
+      gradient.addColorStop(1, 'rgba(14, 154, 134, 0)');
 
       volumeChart = new Chart(ctx, {
         type: 'line',
@@ -1397,13 +1398,13 @@
           datasets: [{
             label: 'Volumen (kg)',
             data: data.length ? data : [0],
-            borderColor: '#3ee0c8',
+            borderColor: '#0e9a86',
             backgroundColor: gradient,
             borderWidth: 2.5,
             tension: 0.4,
             fill: true,
-            pointBackgroundColor: '#3ee0c8',
-            pointBorderColor: '#07080b',
+            pointBackgroundColor: '#0e9a86',
+            pointBorderColor: '#ffffff',
             pointBorderWidth: 2,
             pointRadius: 4
           }]
@@ -1413,8 +1414,8 @@
           maintainAspectRatio: false,
           plugins: { legend: { display: false } },
           scales: {
-            x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#8a9bb0', font: { size: 11 } }, border: { display: false } },
-            y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#8a9bb0', font: { size: 11 } }, border: { display: false } }
+            x: { grid: { color: 'rgba(20,32,24,0.06)' }, ticks: { color: '#5c6f66', font: { size: 11 } }, border: { display: false } },
+            y: { grid: { color: 'rgba(20,32,24,0.06)' }, ticks: { color: '#5c6f66', font: { size: 11 } }, border: { display: false } }
           }
         }
       });
