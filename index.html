@@ -221,11 +221,52 @@
     }
 
     .step-btn {
-      min-width: 44px;
-      min-height: 44px;
-      border-radius: 12px;
-      font-size: 15px;
+      min-width: 40px;
+      min-height: 40px;
+      border-radius: 11px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #5c6f66;
+      background: #f4f7f2;
+    }
+
+    .set-card {
+      border: 1px solid rgba(20, 32, 24, 0.08);
+      border-radius: 16px;
+      background: #fff;
+      padding: 12px;
+      margin-bottom: 8px;
+    }
+    .set-card.is-done {
+      background: #f3fbf8;
+      border-color: rgba(14, 154, 134, 0.28);
+    }
+    .set-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
       font-weight: 700;
+      background: #f0f4f1;
+      color: #5c6f66;
+      flex-shrink: 0;
+    }
+    .set-card.is-done .set-num {
+      background: #0e9a86;
+      color: #fff;
+    }
+    .add-set-btn {
+      width: 100%;
+      height: 44px;
+      border-radius: 14px;
+      border: 1px dashed rgba(20, 32, 24, 0.16);
+      background: transparent;
+      color: #0e9a86;
+      font-size: 13px;
+      font-weight: 650;
     }
 
     textarea.note-input {
@@ -849,18 +890,13 @@
         const restLabel = ex.rest >= 120 ? '2 min' : `${ex.rest}s`;
 
         let html = `
-          <div class="flex items-start justify-between mb-2 gap-3">
-            <div class="min-w-0">
-              <h3 class="text-[15px] font-semibold text-ink-950 leading-snug">${ex.name}</h3>
-              <p class="text-[12px] text-aura-400 font-medium mt-0.5">${ex.target} · descanso ${restLabel}</p>
-            </div>
-            <button onclick="addExtraSet('${currentDay}', ${exIdx})" class="pressable shrink-0 text-[12px] font-semibold text-mist-400 bg-black/[0.04] hairline w-8 h-8 rounded-full flex items-center justify-center">
-              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-            </button>
+          <div class="mb-3">
+            <h3 class="text-[16px] font-semibold text-ink-950 leading-snug">${ex.name}</h3>
+            <p class="text-[12px] text-mist-400 font-medium mt-0.5">${ex.target} · descanso ${restLabel}</p>
           </div>
-          <input type="text" maxlength="80" placeholder="Nota: hombro, pump..." value="${escapeHtml(note)}"
+          <input type="text" maxlength="80" placeholder="Nota (opcional)" value="${escapeHtml(note)}"
             oninput="saveNote(${exIdx}, this.value)"
-            class="note-input w-full mb-3 bg-white border border-black/10 px-3 py-2 rounded-xl text-ink-950 placeholder:text-mist-500/70">
+            class="note-input w-full mb-3 bg-[#f7f8f5] border border-black/10 px-3 py-2 rounded-xl text-ink-950 placeholder:text-mist-500/70">
         `;
 
         const setKeyPrefix = `${currentDay}_ex${exIdx}_`;
@@ -875,49 +911,66 @@
           const lastW = lastSet ? parseFloat(lastSet.weight) : NaN;
           const isPr = current.done && !isNaN(curW) && !isNaN(lastW) && curW > lastW;
 
+          const isExtra = s > ex.sets;
           html += `
-            <div class="mb-2 p-2.5 rounded-xl ${current.done ? 'bg-aura-400/[0.1]' : 'bg-black/[0.03]'}">
-              <div class="flex items-center justify-between mb-2">
-                <div>
-                  <span class="text-[13px] font-semibold ${isPr ? 'text-aura-500' : 'text-ink-950'}">Serie ${s}${isPr ? ' · PR' : ''}</span>
-                  <span class="text-[12px] text-mist-500 mono ml-2">ant. ${prev}</span>
-                </div>
-                <button onclick="toggleSet('${setKey}')"
-                  class="check-btn rounded-xl flex items-center justify-center pressable ${
-                    current.done
-                      ? 'bg-aura-400 text-white shadow-[0_4px_12px_rgba(14,154,134,0.28)]'
-                      : 'bg-white border border-black/10 text-mist-500'
-                  }">
-                  <i data-lucide="check" class="w-4 h-4"></i>
-                </button>
-              </div>
-              <div class="grid grid-cols-2 gap-2">
-                <div>
-                  <p class="text-[10px] uppercase tracking-[0.08em] text-mist-500 font-semibold mb-1">Kg</p>
-                  <div class="flex items-center gap-1">
-                    <button onclick="bump('${setKey}', 'weight', -2.5)" class="step-btn bg-white hairline">−</button>
-                    <input type="number" step="0.5" inputmode="decimal" placeholder="0" value="${current.weight}" autocomplete="off"
-                      data-key="${setKey}" data-field="weight"
-                      oninput="updateValue('${setKey}', 'weight', this.value)"
-                      class="min-w-0 flex-1 bg-white border border-black/10 text-center py-2 rounded-[10px] font-semibold text-ink-950">
-                    <button onclick="bump('${setKey}', 'weight', 2.5)" class="step-btn bg-white hairline">+</button>
+            <div class="set-card ${current.done ? 'is-done' : ''}">
+              <div class="flex items-start gap-3">
+                <div class="set-num">${s}</div>
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center justify-between gap-2 mb-2">
+                    <div class="min-w-0">
+                      <p class="text-[13px] font-semibold ${isPr ? 'text-aura-500' : 'text-ink-950'}">${isExtra ? 'Serie extra' : 'Serie'} ${isPr ? '· PR' : ''}</p>
+                      <p class="text-[12px] text-mist-500 mt-0.5">Anterior <span class="mono">${prev}</span></p>
+                    </div>
+                    <div class="flex items-center gap-1 shrink-0">
+                      ${isExtra ? `<button onclick="removeSet('${currentDay}', ${exIdx}, ${s})" class="pressable w-10 h-11 rounded-xl text-mist-400 flex items-center justify-center" aria-label="Quitar serie">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                      </button>` : ''}
+                      <button onclick="toggleSet('${setKey}')"
+                        class="check-btn rounded-xl flex items-center justify-center pressable ${
+                          current.done
+                            ? 'bg-aura-400 text-white'
+                            : 'bg-[#f4f7f2] border border-black/10 text-mist-500'
+                        }">
+                        <i data-lucide="check" class="w-4 h-4"></i>
+                      </button>
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <p class="text-[10px] uppercase tracking-[0.08em] text-mist-500 font-semibold mb-1">Reps</p>
-                  <div class="flex items-center gap-1">
-                    <button onclick="bump('${setKey}', 'reps', -1)" class="step-btn bg-white hairline">−</button>
-                    <input type="number" inputmode="numeric" placeholder="0" value="${current.reps}" autocomplete="off"
-                      data-key="${setKey}" data-field="reps"
-                      oninput="updateValue('${setKey}', 'reps', this.value)"
-                      class="min-w-0 flex-1 bg-white border border-black/10 text-center py-2 rounded-[10px] font-semibold text-ink-950">
-                    <button onclick="bump('${setKey}', 'reps', 1)" class="step-btn bg-white hairline">+</button>
+                  <div class="grid grid-cols-2 gap-3">
+                    <div>
+                      <p class="text-[11px] text-mist-500 font-medium mb-1">Peso (kg)</p>
+                      <div class="flex items-center gap-1">
+                        <button onclick="bump('${setKey}', 'weight', -2.5)" class="step-btn pressable">−</button>
+                        <input type="number" step="0.5" inputmode="decimal" placeholder="0" value="${current.weight}" autocomplete="off"
+                          data-key="${setKey}" data-field="weight"
+                          oninput="updateValue('${setKey}', 'weight', this.value)"
+                          class="min-w-0 flex-1 bg-transparent text-center py-2 font-semibold text-[18px] text-ink-950 mono">
+                        <button onclick="bump('${setKey}', 'weight', 2.5)" class="step-btn pressable">+</button>
+                      </div>
+                    </div>
+                    <div>
+                      <p class="text-[11px] text-mist-500 font-medium mb-1">Reps</p>
+                      <div class="flex items-center gap-1">
+                        <button onclick="bump('${setKey}', 'reps', -1)" class="step-btn pressable">−</button>
+                        <input type="number" inputmode="numeric" placeholder="0" value="${current.reps}" autocomplete="off"
+                          data-key="${setKey}" data-field="reps"
+                          oninput="updateValue('${setKey}', 'reps', this.value)"
+                          class="min-w-0 flex-1 bg-transparent text-center py-2 font-semibold text-[18px] text-ink-950 mono">
+                        <button onclick="bump('${setKey}', 'reps', 1)" class="step-btn pressable">+</button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           `;
         }
+
+        html += `
+          <button onclick="addExtraSet('${currentDay}', ${exIdx})" class="add-set-btn pressable mt-1 flex items-center justify-center gap-1.5">
+            <i data-lucide="plus" class="w-4 h-4"></i> Añadir serie
+          </button>
+        `;
 
         exCard.innerHTML = html;
         container.appendChild(exCard);
@@ -977,6 +1030,21 @@
       const key = `${dayKey}_ex${exIdx}_count`;
       const currentCount = activeData[key] || DEFAULT_ROUTINE[dayKey].exercises[exIdx].sets;
       activeData[key] = currentCount + 1;
+      saveActiveData();
+      renderExercises();
+    }
+
+    function removeSet(dayKey, exIdx, setNum) {
+      const planned = DEFAULT_ROUTINE[dayKey].exercises[exIdx].sets;
+      const prefix = `${dayKey}_ex${exIdx}_`;
+      const total = activeData[prefix + 'count'] || planned;
+      if (setNum <= planned || total <= planned) return;
+      for (let s = setNum; s < total; s++) {
+        const next = activeData[`${prefix}s${s + 1}`];
+        activeData[`${prefix}s${s}`] = next ? { ...next } : { weight: '', reps: '', done: false };
+      }
+      delete activeData[`${prefix}s${total}`];
+      activeData[prefix + 'count'] = total - 1;
       saveActiveData();
       renderExercises();
     }
