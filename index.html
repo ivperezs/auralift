@@ -184,9 +184,33 @@
       50% { box-shadow: 0 0 0 3px rgba(14, 154, 134, 0.35); background: rgba(14, 154, 134, 0.1); }
     }
 
-    .header-pad {
-      padding-top: max(12px, calc(var(--safe-top) + 8px));
+    .header-dock {
+      padding-top: max(10px, calc(var(--safe-top) + 8px));
     }
+
+    .heat-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 4px;
+    }
+    .heat-grid {
+      display: grid;
+      grid-template-rows: repeat(7, 11px);
+      grid-auto-flow: column;
+      grid-auto-columns: 11px;
+      gap: 3px;
+      width: max-content;
+    }
+    .heat-cell {
+      width: 11px;
+      height: 11px;
+      border-radius: 2px;
+    }
+    .heat-0 { background: #e6ebe7; }
+    .heat-1 { background: #c5efe6; }
+    .heat-2 { background: #7bcbb8; }
+    .heat-3 { background: #0e9a86; }
+    .heat-4 { background: #0a6b5e; }
 
     .progress-track {
       height: 4px;
@@ -228,12 +252,6 @@
       font-weight: 700;
     }
 
-    textarea.note-input {
-      font-size: 16px;
-      -webkit-appearance: none;
-      appearance: none;
-    }
-
     @media (prefers-reduced-motion: reduce) {
       * {
         animation: none !important;
@@ -245,25 +263,25 @@
 
 <body class="app-bg text-ink-950 min-h-screen select-none antialiased pb-44">
 
-  <header class="sticky top-0 z-30 glass border-b border-black/[0.06] header-pad px-5 pb-3">
-    <div class="max-w-xl mx-auto flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-aura-300 to-aura-600 flex items-center justify-center shadow-[0_8px_24px_rgba(32,196,176,0.28)]">
+  <header class="sticky top-0 z-30 header-dock px-4 pb-2">
+    <div class="max-w-xl mx-auto glass hairline rounded-[22px] px-3.5 py-3 shadow-[0_8px_30px_rgba(20,32,24,0.08)] flex items-center justify-between">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-aura-300 to-aura-600 flex items-center justify-center shadow-[0_8px_24px_rgba(14,154,134,0.22)] shrink-0">
           <i data-lucide="dumbbell" class="w-5 h-5 text-ink-950"></i>
         </div>
-        <div>
+        <div class="min-w-0">
           <h1 class="text-[17px] font-semibold tracking-tight text-ink-950 leading-none">AuraLift</h1>
           <p class="text-[12px] text-mist-400 mt-1 font-medium" id="header-sub">Recomposición · 4 días</p>
         </div>
       </div>
-      <button onclick="switchTab('analytics')" class="pressable text-[13px] font-semibold bg-black/[0.05] text-ink-900 px-3.5 py-2 rounded-full hairline flex items-center gap-1.5">
+      <button onclick="switchTab('analytics')" class="pressable text-[13px] font-semibold bg-black/[0.05] text-ink-900 px-3.5 py-2 rounded-full hairline flex items-center gap-1.5 shrink-0">
         <i data-lucide="bar-chart-3" class="w-4 h-4 text-aura-400"></i>
         <span>Progreso</span>
       </button>
     </div>
   </header>
 
-  <main class="max-w-xl mx-auto px-4 mt-4">
+  <main class="max-w-xl mx-auto px-4 mt-3">
 
     <div id="tab-workout">
       <div id="today-banner" class="hidden pressable mb-4 card rounded-2xl px-4 py-3 flex items-center justify-between gap-3" onclick="goToSuggestedDay()">
@@ -348,13 +366,27 @@
       </div>
 
       <div class="card rounded-2xl p-4">
-        <h3 class="text-[12px] font-semibold text-mist-400 uppercase tracking-[0.12em] mb-3">Copia de seguridad</h3>
-        <p class="text-[13px] text-mist-400 mb-3">Mándatelo por WhatsApp o Mail. Si borras Safari, esto te salva el historial.</p>
-        <div class="grid grid-cols-2 gap-2">
-          <button onclick="exportBackup()" class="pressable h-11 rounded-xl bg-aura-400 text-white font-semibold text-[13px]">Exportar</button>
-          <button onclick="document.getElementById('import-file').click()" class="pressable h-11 rounded-xl bg-black/[0.05] hairline font-semibold text-[13px]">Importar</button>
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-[12px] font-semibold text-mist-400 uppercase tracking-[0.12em]">Actividad</h3>
+          <p class="text-[11px] text-mist-400" id="heat-legend">0 días</p>
         </div>
-        <input id="import-file" type="file" accept="application/json" class="hidden" onchange="importBackup(event)">
+        <div class="flex gap-2">
+          <div class="flex flex-col justify-between text-[9px] text-mist-500 py-[1px] leading-none shrink-0">
+            <span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span>
+          </div>
+          <div class="heat-wrap flex-1 min-w-0">
+            <div class="heat-grid" id="heat-grid"></div>
+          </div>
+        </div>
+        <div class="flex items-center justify-end gap-1 mt-3 text-[10px] text-mist-500">
+          <span>Menos</span>
+          <span class="heat-cell heat-0"></span>
+          <span class="heat-cell heat-1"></span>
+          <span class="heat-cell heat-2"></span>
+          <span class="heat-cell heat-3"></span>
+          <span class="heat-cell heat-4"></span>
+          <span>Más</span>
+        </div>
       </div>
 
       <div class="card rounded-2xl p-4">
@@ -368,6 +400,16 @@
         <h3 class="text-[12px] font-semibold text-mist-400 uppercase tracking-[0.12em] mb-1">Últimas sesiones</h3>
         <div id="history-list" class="divide-y divide-black/10">
         </div>
+      </div>
+
+      <div class="card rounded-2xl p-4">
+        <h3 class="text-[12px] font-semibold text-mist-400 uppercase tracking-[0.12em] mb-3">Copia de seguridad</h3>
+        <p class="text-[13px] text-mist-400 mb-3">Mándatelo por WhatsApp o Mail. Si borras Safari, esto te salva el historial.</p>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="exportBackup()" class="pressable h-11 rounded-xl bg-aura-400 text-white font-semibold text-[13px]">Exportar</button>
+          <button onclick="document.getElementById('import-file').click()" class="pressable h-11 rounded-xl bg-black/[0.05] hairline font-semibold text-[13px]">Importar</button>
+        </div>
+        <input id="import-file" type="file" accept="application/json" class="hidden" onchange="importBackup(event)">
       </div>
     </div>
 
@@ -448,12 +490,12 @@
         subtitle: "Lunes · Empuje",
         short: "Lun",
         exercises: [
-          { name: "Press de banca plano", target: "3 × 6-8", sets: 3, rest: 120 },
-          { name: "Remo con barra / polea", target: "3 × 8-10", sets: 3, rest: 120 },
-          { name: "Press inclinado mancuernas", target: "3 × 10-12", sets: 3, rest: 90 },
-          { name: "Jalón al pecho prono", target: "3 × 10-12", sets: 3, rest: 90 },
-          { name: "Elevaciones laterales", target: "4 × 12-15", sets: 4, rest: 60 },
-          { name: "Extensiones tríceps polea", target: "3 × 10-12", sets: 3, rest: 90 }
+          { name: "Press de banca plano", target: "3 × 6-8", sets: 3 },
+          { name: "Remo con barra / polea", target: "3 × 8-10", sets: 3 },
+          { name: "Press inclinado mancuernas", target: "3 × 10-12", sets: 3 },
+          { name: "Jalón al pecho prono", target: "3 × 10-12", sets: 3 },
+          { name: "Elevaciones laterales", target: "4 × 12-15", sets: 4 },
+          { name: "Extensiones tríceps polea", target: "3 × 10-12", sets: 3 }
         ]
       },
       piernaA: {
@@ -461,11 +503,11 @@
         subtitle: "Martes · Cuádriceps",
         short: "Mar",
         exercises: [
-          { name: "Sentadilla trasera", target: "3 × 6-8", sets: 3, rest: 120 },
-          { name: "Peso muerto rumano", target: "3 × 8-10", sets: 3, rest: 120 },
-          { name: "Extensiones de cuádriceps", target: "3 × 12-15", sets: 3, rest: 90 },
-          { name: "Curl femoral tumbado", target: "3 × 10-12", sets: 3, rest: 90 },
-          { name: "Gemelos de pie", target: "4 × 12-15", sets: 4, rest: 60 }
+          { name: "Sentadilla trasera", target: "3 × 6-8", sets: 3 },
+          { name: "Peso muerto rumano", target: "3 × 8-10", sets: 3 },
+          { name: "Extensiones de cuádriceps", target: "3 × 12-15", sets: 3 },
+          { name: "Curl femoral tumbado", target: "3 × 10-12", sets: 3 },
+          { name: "Gemelos de pie", target: "4 × 12-15", sets: 4 }
         ]
       },
       torsoB: {
@@ -473,12 +515,12 @@
         subtitle: "Jueves · Tracción",
         short: "Jue",
         exercises: [
-          { name: "Press militar barra/manc", target: "3 × 6-8", sets: 3, rest: 120 },
-          { name: "Dominadas / Jalón neutro", target: "3 × 8-10", sets: 3, rest: 120 },
-          { name: "Cruces en poleas / Contractor", target: "3 × 12-15", sets: 3, rest: 90 },
-          { name: "Remo unilateral manc/máq", target: "3 × 10-12", sets: 3, rest: 90 },
-          { name: "Face Pull / Pájaros", target: "3 × 12-15", sets: 3, rest: 60 },
-          { name: "Curl de bíceps barra Z", target: "3 × 10-12", sets: 3, rest: 90 }
+          { name: "Press militar barra/manc", target: "3 × 6-8", sets: 3 },
+          { name: "Dominadas / Jalón neutro", target: "3 × 8-10", sets: 3 },
+          { name: "Cruces en poleas / Contractor", target: "3 × 12-15", sets: 3 },
+          { name: "Remo unilateral manc/máq", target: "3 × 10-12", sets: 3 },
+          { name: "Face Pull / Pájaros", target: "3 × 12-15", sets: 3 },
+          { name: "Curl de bíceps barra Z", target: "3 × 10-12", sets: 3 }
         ]
       },
       piernaB: {
@@ -486,11 +528,11 @@
         subtitle: "Viernes · Cadena post.",
         short: "Vie",
         exercises: [
-          { name: "Peso muerto convencional", target: "3 × 5-7", sets: 3, rest: 120 },
-          { name: "Sentadilla búlgara", target: "3 × 8-10/p", sets: 3, rest: 90 },
-          { name: "Curl femoral sentado", target: "3 × 10-12", sets: 3, rest: 90 },
-          { name: "Prensa inclinada", target: "3 × 10-12", sets: 3, rest: 90 },
-          { name: "Gemelos sentado", target: "4 × 12-15", sets: 4, rest: 60 }
+          { name: "Peso muerto convencional", target: "3 × 5-7", sets: 3 },
+          { name: "Sentadilla búlgara", target: "3 × 8-10/p", sets: 3 },
+          { name: "Curl femoral sentado", target: "3 × 10-12", sets: 3 },
+          { name: "Prensa inclinada", target: "3 × 10-12", sets: 3 },
+          { name: "Gemelos sentado", target: "4 × 12-15", sets: 4 }
         ]
       }
     };
@@ -508,15 +550,15 @@
     if (!DEFAULT_ROUTINE[currentDay]) currentDay = "torsoA";
     let activeData = JSON.parse(localStorage.getItem('aura_active_session')) || {};
     let historyData = JSON.parse(localStorage.getItem('aura_history')) || [];
-    let exerciseNotes = JSON.parse(localStorage.getItem('aura_exercise_notes')) || {};
     let bodyweightLog = JSON.parse(localStorage.getItem('aura_bodyweight')) || [];
     let pendingFinishSummary = '';
     let volumeChart = null;
     let modalConfirmFn = null;
     let wakeLock = null;
 
-    let timerSeconds = 90;
-    let timerPreset = 90;
+    let timerPreset = parseInt(localStorage.getItem('aura_timer_preset'), 10) || 90;
+    if (![60, 90, 120].includes(timerPreset)) timerPreset = 90;
+    let timerSeconds = timerPreset;
     let timerInterval = null;
     let timerRunning = false;
     let timerEndsAt = 0;
@@ -577,13 +619,6 @@
         const v = activeData[k];
         return v && (v.weight || v.reps);
       });
-    }
-
-    function restForSetKey(key) {
-      const m = key.match(/^(torsoA|piernaA|torsoB|piernaB)_ex(\d+)_/);
-      if (!m) return 90;
-      const ex = DEFAULT_ROUTINE[m[1]].exercises[Number(m[2])];
-      return (ex && ex.rest) || 90;
     }
 
     function goToSuggestedDay() {
@@ -759,6 +794,7 @@
     function setTimer(sec) {
       timerPreset = sec;
       timerSeconds = sec;
+      localStorage.setItem('aura_timer_preset', String(sec));
       updateTimerUI();
       startTimer();
     }
@@ -845,16 +881,14 @@
 
         const lastRecords = getLastSessionRecord(ex.name);
 
-        const note = exerciseNotes[ex.name] || '';
-        const restLabel = ex.rest >= 120 ? '2 min' : `${ex.rest}s`;
         const setKeyPrefix = `${currentDay}_ex${exIdx}_`;
         const totalSets = (activeData[setKeyPrefix + 'count'] || ex.sets);
 
         let html = `
-          <div class="flex items-start justify-between mb-2 gap-3">
+          <div class="flex items-start justify-between mb-3 gap-3">
             <div class="min-w-0">
               <h3 class="text-[15px] font-semibold text-ink-950 leading-snug">${ex.name}</h3>
-              <p class="text-[12px] text-aura-400 font-medium mt-0.5">${ex.target} · descanso ${restLabel}</p>
+              <p class="text-[12px] text-aura-400 font-medium mt-0.5">${ex.target}</p>
             </div>
             <div class="flex items-center gap-1.5 shrink-0">
               ${totalSets > ex.sets ? `<button onclick="removeSet('${currentDay}', ${exIdx})" class="pressable text-[12px] font-semibold text-mist-400 bg-black/[0.04] hairline w-8 h-8 rounded-full flex items-center justify-center">
@@ -865,9 +899,6 @@
               </button>
             </div>
           </div>
-          <input type="text" maxlength="80" placeholder="Nota: hombro, pump..." value="${escapeHtml(note)}"
-            oninput="saveNote(${exIdx}, this.value)"
-            class="note-input w-full mb-3 bg-white border border-black/10 px-3 py-2 rounded-xl text-ink-950 placeholder:text-mist-500/70">
         `;
 
         for (let s = 1; s <= totalSets; s++) {
@@ -933,12 +964,6 @@
       lucide.createIcons();
       updateHeaderStats();
       requestAnimationFrame(() => window.scrollTo(0, y));
-    }
-
-    function saveNote(exIdx, val) {
-      const name = DEFAULT_ROUTINE[currentDay].exercises[exIdx].name;
-      exerciseNotes[name] = val;
-      localStorage.setItem('aura_exercise_notes', JSON.stringify(exerciseNotes));
     }
 
     function bump(key, field, delta) {
@@ -1015,7 +1040,7 @@
       renderExercises();
 
       if (activeData[key].done) {
-        setTimer(restForSetKey(key));
+        setTimer(timerPreset);
       }
     }
 
@@ -1082,12 +1107,7 @@
         }
       });
 
-      const notes = {};
-      dayData.exercises.forEach((ex) => {
-        if (exerciseNotes[ex.name]) notes[ex.name] = exerciseNotes[ex.name];
-      });
-
-      return { completedSets, totalCount, sessionTonnage, sessionExercises, dayData, notes };
+      return { completedSets, totalCount, sessionTonnage, sessionExercises, dayData };
     }
 
     function finishWorkout() {
@@ -1112,7 +1132,7 @@
     }
 
     function saveFinishedSession(session) {
-      const { completedSets, sessionTonnage, sessionExercises, dayData, notes } = session;
+      const { completedSets, sessionTonnage, sessionExercises, dayData } = session;
       const logEntry = {
         id: Date.now(),
         date: new Date().toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }),
@@ -1120,8 +1140,7 @@
         name: dayData.name,
         tonnage: sessionTonnage,
         completedSets: completedSets,
-        exercises: sessionExercises,
-        notes: notes || {}
+        exercises: sessionExercises
       };
 
       historyData.push(logEntry);
@@ -1163,6 +1182,7 @@
         renderBodyweight();
         renderHistoryList();
         renderChart();
+        renderHeatmap();
       } else {
         document.getElementById('tab-analytics').classList.add('hidden');
         document.getElementById('tab-workout').classList.remove('hidden');
@@ -1192,6 +1212,7 @@
           renderStats();
           renderHistoryList();
           renderChart();
+          renderHeatmap();
           renderTabs();
         }
       });
@@ -1202,8 +1223,7 @@
       if (!h) return;
       const lines = Object.keys(h.exercises || {}).map((name) => {
         const sets = h.exercises[name].map(s => `${s.weight}×${s.reps}`).join('  ');
-        const note = (h.notes && h.notes[name]) ? `\nNota: ${h.notes[name]}` : '';
-        return `${name}\n${sets}${note}`;
+        return `${name}\n${sets}`;
       });
       const bw = h.bodyweight ? `\nPeso corporal: ${h.bodyweight} kg` : '';
       showModal(h.name, `${h.date} · ${h.tonnage.toLocaleString()} kg${bw}\n\n${lines.join('\n\n') || 'Sin detalle'}`);
@@ -1340,7 +1360,6 @@
         exportedAt: new Date().toISOString(),
         history: historyData,
         session: activeData,
-        notes: exerciseNotes,
         bodyweight: bodyweightLog
       };
       const json = JSON.stringify(payload, null, 2);
@@ -1376,11 +1395,9 @@
             onConfirm: () => {
               if (Array.isArray(data.history)) historyData = data.history;
               if (data.session) activeData = data.session;
-              if (data.notes) exerciseNotes = data.notes;
               if (Array.isArray(data.bodyweight)) bodyweightLog = data.bodyweight;
               localStorage.setItem('aura_history', JSON.stringify(historyData));
               localStorage.setItem('aura_active_session', JSON.stringify(activeData));
-              localStorage.setItem('aura_exercise_notes', JSON.stringify(exerciseNotes));
               localStorage.setItem('aura_bodyweight', JSON.stringify(bodyweightLog));
               renderTabs();
               renderExercises();
@@ -1389,6 +1406,7 @@
               renderBodyweight();
               renderHistoryList();
               renderChart();
+              renderHeatmap();
               showModal('Listo', 'Copia restaurada.');
             }
           });
@@ -1397,6 +1415,50 @@
         }
       };
       reader.readAsText(file);
+    }
+
+    function localDateKey(ts) {
+      const d = new Date(ts);
+      if (isNaN(d.getTime())) return null;
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    }
+
+    function renderHeatmap() {
+      const grid = document.getElementById('heat-grid');
+      const legend = document.getElementById('heat-legend');
+      if (!grid) return;
+      const year = new Date().getFullYear();
+      const counts = {};
+      historyData.forEach((h) => {
+        const key = localDateKey(h.id);
+        if (!key || key.slice(0, 4) !== String(year)) return;
+        counts[key] = (counts[key] || 0) + 1;
+      });
+      const start = new Date(year, 0, 1);
+      const end = new Date(year, 11, 31);
+      const mondayIndex = (d) => (d.getDay() + 6) % 7;
+      const cells = [];
+      for (let i = 0; i < mondayIndex(start); i++) cells.push({ empty: true });
+      for (let d = new Date(start); d.getTime() <= end.getTime(); d.setDate(d.getDate() + 1)) {
+        const key = localDateKey(d.getTime());
+        cells.push({ key, count: counts[key] || 0 });
+      }
+      grid.innerHTML = cells.map((c) => {
+        if (c.empty) return `<span class="heat-cell" style="visibility:hidden"></span>`;
+        const lvl = c.count === 0 ? 0 : Math.min(4, c.count);
+        return `<span class="heat-cell heat-${lvl}" data-d="${c.key}" title="${c.key}"></span>`;
+      }).join('');
+      const days = Object.keys(counts).length;
+      if (legend) legend.innerText = `${year} · ${days} ${days === 1 ? 'día' : 'días'}`;
+      const wrap = grid.parentElement;
+      requestAnimationFrame(() => {
+        const today = grid.querySelector(`[data-d="${localDateKey(Date.now())}"]`);
+        if (today) today.scrollIntoView({ inline: 'nearest', block: 'nearest' });
+        else if (wrap) wrap.scrollLeft = wrap.scrollWidth;
+      });
     }
 
     function renderChart() {
