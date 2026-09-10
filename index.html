@@ -269,6 +269,66 @@
       font-weight: 650;
     }
 
+    .heat-ydays {
+      display: grid;
+      grid-template-rows: repeat(7, 11px);
+      gap: 3px;
+      margin-top: 16px;
+    }
+    .heat-ydays span {
+      display: flex;
+      align-items: center;
+      height: 11px;
+    }
+    .heat-months {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 11px;
+      gap: 3px;
+      height: 14px;
+      margin-bottom: 2px;
+      font-size: 9px;
+      color: #5c6f66;
+    }
+    .heat-months span {
+      overflow: visible;
+      white-space: nowrap;
+    }
+    .heat-grid {
+      display: grid;
+      grid-auto-flow: column;
+      grid-template-rows: repeat(7, 11px);
+      grid-auto-columns: 11px;
+      gap: 3px;
+    }
+    .heat-cell {
+      width: 11px;
+      height: 11px;
+      border-radius: 2px;
+      background: #e7eee9;
+      padding: 0;
+      border: 0;
+    }
+    .heat-cell.l1 { background: #c8ebe3; }
+    .heat-cell.l2 { background: #7ecdc0; }
+    .heat-cell.l3 { background: #0e9a86; }
+    .heat-cell.l4 { background: #0a5c50; }
+    .heat-cell.is-today {
+      outline: 1px solid rgba(20, 32, 24, 0.35);
+      outline-offset: 0;
+    }
+    .heat-swatch {
+      width: 11px;
+      height: 11px;
+      border-radius: 2px;
+      display: inline-block;
+    }
+    .heat-swatch.l0 { background: #e7eee9; }
+    .heat-swatch.l1 { background: #c8ebe3; }
+    .heat-swatch.l2 { background: #7ecdc0; }
+    .heat-swatch.l3 { background: #0e9a86; }
+    .heat-swatch.l4 { background: #0a5c50; }
+
     textarea.note-input {
       font-size: 16px;
       -webkit-appearance: none;
@@ -375,6 +435,34 @@
           <p class="text-[11px] text-mist-400">7 días</p>
           <p class="text-[18px] font-semibold text-ink-950 mono mt-0.5" id="stat-week">0</p>
         </div>
+      </div>
+
+      <div class="card rounded-2xl p-4">
+        <div class="flex items-start justify-between gap-3 mb-3">
+          <div>
+            <h3 class="text-[12px] font-semibold text-mist-400 uppercase tracking-[0.12em]">Actividad</h3>
+            <p class="text-[13px] text-ink-950 mt-1" id="heat-summary">Sin sesiones todavía</p>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <div class="heat-ydays text-[9px] text-mist-500 leading-none shrink-0 pt-[1px]">
+            <span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span>
+          </div>
+          <div class="overflow-x-auto min-w-0 flex-1">
+            <div id="heat-months" class="heat-months"></div>
+            <div id="heatmap" class="heat-grid"></div>
+          </div>
+        </div>
+        <div class="flex items-center justify-end gap-1 mt-3 text-[10px] text-mist-500">
+          <span>Menos</span>
+          <span class="heat-swatch l0"></span>
+          <span class="heat-swatch l1"></span>
+          <span class="heat-swatch l2"></span>
+          <span class="heat-swatch l3"></span>
+          <span class="heat-swatch l4"></span>
+          <span>Más</span>
+        </div>
+        <p id="heat-detail" class="text-[12px] text-mist-400 mt-2 min-h-[1.2em]"></p>
       </div>
 
       <div class="card rounded-2xl p-4">
@@ -1207,6 +1295,7 @@
         document.getElementById('timer-widget').classList.add('hidden');
         document.getElementById('tab-analytics').classList.remove('hidden');
         renderStats();
+        renderHeatmap();
         renderPrs();
         renderBodyweight();
         renderHistoryList();
@@ -1230,6 +1319,104 @@
       if (sub) sub.innerText = historyData.length ? `${historyData.length} sesiones guardadas` : 'Recomposición · 4 días';
     }
 
+    function isoDay(d) {
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    function mondayOf(d) {
+      const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      const wd = x.getDay();
+      x.setDate(x.getDate() + (wd === 0 ? -6 : 1 - wd));
+      return x;
+    }
+
+    function heatLevel(tonnage, maxT) {
+      if (!tonnage) return 0;
+      if (!maxT) return 2;
+      const r = tonnage / maxT;
+      if (r < 0.25) return 1;
+      if (r < 0.5) return 2;
+      if (r < 0.8) return 3;
+      return 4;
+    }
+
+    function renderHeatmap() {
+      const grid = document.getElementById('heatmap');
+      const monthsEl = document.getElementById('heat-months');
+      const summary = document.getElementById('heat-summary');
+      if (!grid) return;
+
+      const byDay = {};
+      let yearCount = 0;
+      const yearStart = new Date(new Date().getFullYear(), 0, 1).getTime();
+      historyData.forEach((h) => {
+        const ts = h.id || 0;
+        if (!ts) return;
+        const key = isoDay(new Date(ts));
+        if (!byDay[key]) byDay[key] = { count: 0, tonnage: 0, items: [] };
+        byDay[key].count += 1;
+        byDay[key].tonnage += h.tonnage || 0;
+        byDay[key].items.push(h);
+        if (ts >= yearStart) yearCount += 1;
+      });
+      const maxT = Object.values(byDay).reduce((m, d) => Math.max(m, d.tonnage), 0);
+
+      const today = new Date();
+      const thisMonday = mondayOf(today);
+      const weeks = 20;
+      const origin = new Date(thisMonday);
+      origin.setDate(thisMonday.getDate() - (weeks - 1) * 7);
+
+      const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+      let lastMonth = -1;
+      const monthLabels = [];
+      grid.innerHTML = '';
+
+      for (let w = 0; w < weeks; w++) {
+        const weekMonday = new Date(origin);
+        weekMonday.setDate(origin.getDate() + w * 7);
+        const month = weekMonday.getMonth();
+        monthLabels.push(month !== lastMonth ? `<span>${monthNames[month]}</span>` : '<span></span>');
+        lastMonth = month;
+
+        for (let d = 0; d < 7; d++) {
+          const cellDate = new Date(origin);
+          cellDate.setDate(origin.getDate() + w * 7 + d);
+          const key = isoDay(cellDate);
+          const info = byDay[key];
+          const future = cellDate.setHours(0, 0, 0, 0) > new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+          const lvl = (!future && info) ? heatLevel(info.tonnage, maxT) : 0;
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = `heat-cell l${lvl}${isoDay(today) === key ? ' is-today' : ''}`;
+          btn.title = cellDate.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' });
+          if (!future) {
+            btn.onclick = () => showHeatDay(key, info, cellDate);
+          }
+          grid.appendChild(btn);
+        }
+      }
+
+      monthsEl.innerHTML = monthLabels.join('');
+      if (summary) {
+        summary.innerText = yearCount
+          ? `${yearCount} sesión${yearCount === 1 ? '' : 'es'} este año`
+          : 'Sin sesiones este año';
+      }
+    }
+
+    function showHeatDay(key, info, date) {
+      const el = document.getElementById('heat-detail');
+      if (!el) return;
+      const label = date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'short' });
+      if (!info || !info.count) {
+        el.innerText = `${label}: sin entreno`;
+        return;
+      }
+      const names = info.items.map((h) => h.name).join(', ');
+      el.innerText = `${label}: ${info.count} sesión · ${Math.round(info.tonnage).toLocaleString()} kg · ${names}`;
+    }
+
     function deleteSession(id) {
       showModal('Borrar sesión', 'Esta sesión desaparecerá del historial. Tus marcas del día de hoy no se tocan.', {
         confirmText: 'Borrar',
@@ -1238,6 +1425,7 @@
           historyData = historyData.filter(h => h.id !== id);
           localStorage.setItem('aura_history', JSON.stringify(historyData));
           renderStats();
+          renderHeatmap();
           renderHistoryList();
           renderChart();
           renderTabs();
@@ -1433,6 +1621,7 @@
               renderTabs();
               renderExercises();
               renderStats();
+              renderHeatmap();
               renderPrs();
               renderBodyweight();
               renderHistoryList();
