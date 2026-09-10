@@ -151,13 +151,187 @@
       border: 1px solid rgba(20, 32, 24, 0.1);
     }
 
-    .set-row {
-      min-height: 48px;
+    .ex-sheet {
+      background: #fff;
+      border: 1px solid rgba(20, 32, 24, 0.07);
+      border-radius: 22px;
+      box-shadow: 0 10px 28px rgba(20, 32, 24, 0.05);
+      overflow: hidden;
     }
 
-    .check-btn {
-      min-width: 44px;
-      min-height: 44px;
+    .ex-head {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      padding: 15px 16px 13px;
+    }
+
+    .ex-name {
+      flex: 1;
+      min-width: 0;
+      margin: 0;
+      font-size: 16px;
+      font-weight: 650;
+      letter-spacing: -0.03em;
+      line-height: 1.25;
+      color: #142018;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .ex-rx {
+      flex-shrink: 0;
+      font-size: 13px;
+      font-weight: 750;
+      color: #0e9a86;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+
+    .lift-set {
+      border-top: 1px solid rgba(20, 32, 24, 0.05);
+    }
+    .lift-set.is-done {
+      background: linear-gradient(90deg, rgba(14, 154, 134, 0.1), rgba(14, 154, 134, 0.02) 72%);
+    }
+
+    .lift-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px 4px;
+    }
+
+    .lift-n {
+      width: 26px;
+      height: 26px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 800;
+      color: #5c6f66;
+      background: #eef3ec;
+    }
+    .lift-set.is-done .lift-n {
+      background: #0e9a86;
+      color: #fff;
+    }
+
+    .plate {
+      display: flex;
+      align-items: center;
+      flex: 1.35;
+      min-width: 0;
+      height: 54px;
+      padding: 0 2px;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 50% 50%, #f8fbf7 0 36%, transparent 37%),
+        linear-gradient(180deg, #e8f1ea, #dce8e0);
+      box-shadow:
+        inset 0 0 0 3px rgba(14, 154, 134, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+    .lift-set.is-done .plate {
+      box-shadow:
+        inset 0 0 0 3px #0e9a86,
+        inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    }
+    .plate-face {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .plate input,
+    .rep-chip input {
+      width: 100%;
+      min-width: 0;
+      height: 22px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #142018;
+      line-height: 1;
+    }
+    .plate-unit {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #8a9b93;
+    }
+
+    .rep-chip {
+      display: flex;
+      align-items: center;
+      flex: 0.9;
+      min-width: 0;
+      height: 54px;
+      padding: 0 2px;
+      border-radius: 16px;
+      background: #f3f7f2;
+    }
+    .lift-set.is-done .rep-chip {
+      background: rgba(14, 154, 134, 0.12);
+    }
+
+    .nudge {
+      width: 32px;
+      height: 44px;
+      flex-shrink: 0;
+      border: 0;
+      background: transparent;
+      font-size: 18px;
+      font-weight: 500;
+      color: #0e9a86;
+      line-height: 1;
+    }
+
+    .mark {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      border: 0;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #eef3ec;
+      color: #8a9b93;
+    }
+    .mark.is-on {
+      background: #0e9a86;
+      color: #fff;
+    }
+
+    .lift-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px 10px 46px;
+    }
+
+    .add-set-btn {
+      width: 100%;
+      height: 46px;
+      border: 0;
+      border-top: 1px dashed rgba(20, 32, 24, 0.1);
+      background: transparent;
+      color: #0e9a86;
+      font-size: 13px;
+      font-weight: 650;
     }
 
     .pressable {
@@ -220,75 +394,11 @@
       color: #fbbf24;
     }
 
-    .step-btn {
-      width: 44px;
-      height: 44px;
-      border: 0;
-      background: transparent;
-      font-size: 20px;
-      font-weight: 500;
-      color: #0e9a86;
-      line-height: 1;
-    }
-
-    .set-log {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(20, 32, 24, 0.07);
-    }
-    .set-log:last-of-type {
-      border-bottom: 0;
-    }
-    .set-log.is-done .set-idx {
-      background: #0e9a86;
-      color: #fff;
-    }
-    .set-idx {
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .times {
+      flex-shrink: 0;
       font-size: 13px;
       font-weight: 700;
-      color: #5c6f66;
-      background: #eef3ec;
-      flex-shrink: 0;
-    }
-    .stepper {
-      display: flex;
-      align-items: center;
-      flex: 1;
-      min-width: 0;
-      height: 44px;
-      border-radius: 12px;
-      background: #f4f7f2;
-    }
-    .stepper input {
-      min-width: 0;
-      flex: 1;
-      border: 0;
-      background: transparent;
-      text-align: center;
-      font-size: 17px;
-      font-weight: 650;
-      color: #142018;
-      -webkit-appearance: none;
-      appearance: none;
-    }
-    .add-set-btn {
-      width: 100%;
-      height: 44px;
-      margin-top: 6px;
-      border-radius: 12px;
-      border: 0;
-      background: #f4f7f2;
-      color: #0e9a86;
-      font-size: 14px;
-      font-weight: 650;
+      color: #c4d4c9;
     }
 
     .heat-ydays {
@@ -984,14 +1094,14 @@
 
       dayData.exercises.forEach((ex, exIdx) => {
         const exCard = document.createElement('div');
-        exCard.className = "card rounded-2xl p-4";
+        exCard.className = "ex-sheet";
 
         const lastRecords = getLastSessionRecord(ex.name);
 
         let html = `
-          <div class="mb-3">
-            <h3 class="text-[16px] font-semibold text-ink-950 leading-snug">${ex.name}</h3>
-            <p class="text-[12px] text-mist-400 font-medium mt-0.5">${ex.target}</p>
+          <div class="ex-head">
+            <h3 class="ex-name">${ex.name}</h3>
+            <span class="ex-rx mono">${ex.target}</span>
           </div>
         `;
 
@@ -1009,37 +1119,37 @@
 
           const isExtra = s > ex.sets;
           html += `
-            <div class="set-log ${current.done ? 'is-done' : ''}">
-              <div class="set-idx">${s}</div>
-              <div class="min-w-0 flex-1">
-                <div class="flex items-center gap-2">
-                  <div class="stepper">
-                    <button onclick="bump('${setKey}', 'weight', -2.5)" class="step-btn pressable">−</button>
+            <div class="lift-set ${current.done ? 'is-done' : ''}">
+              <div class="lift-row">
+                <div class="lift-n">${s}</div>
+                <div class="plate">
+                  <button onclick="bump('${setKey}', 'weight', -2.5)" class="nudge pressable">−</button>
+                  <div class="plate-face">
                     <input type="number" step="0.5" inputmode="decimal" placeholder="0" value="${current.weight}" autocomplete="off"
                       data-key="${setKey}" data-field="weight"
                       oninput="updateValue('${setKey}', 'weight', this.value)">
-                    <button onclick="bump('${setKey}', 'weight', 2.5)" class="step-btn pressable">+</button>
+                    <span class="plate-unit">kg</span>
                   </div>
-                  <div class="stepper">
-                    <button onclick="bump('${setKey}', 'reps', -1)" class="step-btn pressable">−</button>
+                  <button onclick="bump('${setKey}', 'weight', 2.5)" class="nudge pressable">+</button>
+                </div>
+                <span class="times">×</span>
+                <div class="rep-chip">
+                  <button onclick="bump('${setKey}', 'reps', -1)" class="nudge pressable">−</button>
+                  <div class="plate-face">
                     <input type="number" inputmode="numeric" placeholder="0" value="${current.reps}" autocomplete="off"
                       data-key="${setKey}" data-field="reps"
                       oninput="updateValue('${setKey}', 'reps', this.value)">
-                    <button onclick="bump('${setKey}', 'reps', 1)" class="step-btn pressable">+</button>
+                    <span class="plate-unit">reps</span>
                   </div>
-                  <button onclick="toggleSet('${setKey}')"
-                    class="check-btn rounded-full flex items-center justify-center pressable shrink-0 ${
-                      current.done
-                        ? 'bg-aura-400 text-white'
-                        : 'bg-[#eef3ec] text-mist-500'
-                    }">
-                    <i data-lucide="check" class="w-4 h-4"></i>
-                  </button>
+                  <button onclick="bump('${setKey}', 'reps', 1)" class="nudge pressable">+</button>
                 </div>
-                <div class="flex items-center justify-between mt-1.5 pl-1">
-                  <p class="text-[11px] text-mist-500">${isPr ? '<span class="text-aura-500 font-semibold">PR</span> · ' : ''}Anterior <span class="mono">${prev}</span>${isExtra ? ' · extra' : ''}</p>
-                  ${isExtra ? `<button onclick="removeSet('${currentDay}', ${exIdx}, ${s})" class="pressable text-[11px] font-semibold text-mist-400">Quitar</button>` : ''}
-                </div>
+                <button onclick="toggleSet('${setKey}')" class="mark pressable ${current.done ? 'is-on' : ''}">
+                  <i data-lucide="check" class="w-4 h-4"></i>
+                </button>
+              </div>
+              <div class="lift-meta">
+                <p class="text-[11px] text-mist-500">${isPr ? '<span class="text-aura-500 font-semibold">PR</span> · ' : ''}Anterior <span class="mono">${prev}</span>${isExtra ? ' · extra' : ''}</p>
+                ${isExtra ? `<button onclick="removeSet('${currentDay}', ${exIdx}, ${s})" class="pressable text-[11px] font-semibold text-mist-400">Quitar</button>` : '<span></span>'}
               </div>
             </div>
           `;
